@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.image.ImageView?>
+
+<VBox fx:controller="com.busbooking.controllers.DashboardController"
+      xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/8"
+      spacing="15"
+      alignment="CENTER">
+
+    <!--&lt;!&ndash; Apply Stylesheet &ndash;&gt;
+    <stylesheets>
+        <URL value="@../assets/styles.css"/>
+    </stylesheets>-->
+
+    <!-- TOP HEADER -->
+    <Label text="Bus Booking System" styleClass="title-label"/>
+
+    <!-- PROFILE SECTION -->
+    <HBox alignment="CENTER" spacing="15">
+        <ImageView fx:id="profilePicture" fitWidth="60" fitHeight="60"/>
+        <Label fx:id="usernameLabel" text="Welcome, User!" styleClass="subtitle-label"/>
+    </HBox>
+
+    <!-- NAVIGATION BUTTONS -->
+    <HBox alignment="CENTER" spacing="20">
+        <Button fx:id="searchBusBtn" text="🚍 Search Bus" onAction="#handleSearchBus"/>
+        <Button fx:id="bookingHistoryBtn" text="📖 Booking History" onAction="#handleBookingHistory"/>
+        <Button fx:id="logoutBtn" text="⚙️ Logout" onAction="#handleLogout"/>
+    </HBox>
+
+    <!-- BOOKING HISTORY SECTION -->
+    <TableView fx:id="bookingHistoryTable">
+        <columns>
+            <TableColumn text="From" fx:id="fromColumn"/>
+            <TableColumn text="To" fx:id="toColumn"/>
+            <TableColumn text="Date" fx:id="dateColumn"/>
+            <TableColumn text="Status" fx:id="statusColumn"/>
+        </columns>
+    </TableView>
+
+</VBox>

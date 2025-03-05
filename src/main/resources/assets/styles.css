@@ -1,0 +1,19 @@
+.title-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px;
+}
+
+.subtitle-label {
+    -fx-font-size: 18px;
+}
+
+Button {
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+}
+
+TableView {
+    -fx-background-color: white;
+    -fx-border-color: gray;
+}
