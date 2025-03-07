@@ -12,7 +12,7 @@
 <VBox fx:controller="com.busbooking.controllers.DashboardController"
       xmlns:fx="http://javafx.com/fxml/1"
       xmlns="http://javafx.com/javafx/8"
-      spacing="15"
+      spacing="20"
       alignment="CENTER">
 
     <!--&lt;!&ndash; Apply Stylesheet &ndash;&gt;

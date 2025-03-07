@@ -10,7 +10,7 @@ public class PassengerMain extends Application {
     @Override
     public void start(Stage stage) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/dashboard.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/Dashboard.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
 
             stage.setTitle("Passenger Dashboard");
@@ -19,7 +19,7 @@ public class PassengerMain extends Application {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Error loading dashboard.fxml");
+            System.out.println("Error loading Dashboard.fxml");
         }
     }
 
