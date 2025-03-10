@@ -5,6 +5,9 @@ import java.security.NoSuchAlgorithmException;
 
 public class PasswordUtil {
     public static String hashPassword(String password) {
+        if (password == null || password.isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be empty");
+        }
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(password.getBytes());
@@ -21,5 +24,10 @@ public class PasswordUtil {
 
     public static boolean verifyPassword(String enteredPassword, String storedHash) {
         return hashPassword(enteredPassword).equals(storedHash);
+    }
+
+    // Check if password meets security requirements
+    public static boolean isPasswordStrong(String password) {
+        return password.length() >= 8 && password.matches(".*[A-Z].*") && password.matches(".*\\d.*");
     }
 }

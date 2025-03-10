@@ -2,6 +2,7 @@ package com.busbooking.services;
 
 import com.busbooking.dao.PassengerDAO;
 import com.busbooking.models.Passenger;
+import com.busbooking.utils.PasswordUtil;
 
 public class PassengerService {
     private static Passenger loggedInUser;
@@ -23,7 +24,7 @@ public class PassengerService {
         loggedInUser = null;
     }
 
-    // ✅ Added authentication method
+    // Added authentication method
     public Passenger authenticate(String email, String password) {
         Passenger passenger = passengerDAO.getPassengerByEmail(email);
         if (passenger != null && passenger.getPasswordHash().equals(password)) {
@@ -32,4 +33,23 @@ public class PassengerService {
         }
         return null; // Authentication failed
     }
+
+    // ✅ Register new passenger with hashed password
+    public boolean registerPassenger(Passenger passenger) {
+        // Hash the password before saving
+        String hashedPassword = PasswordUtil.hashPassword(passenger.getPasswordHash());
+        passenger.setPasswordHash(hashedPassword);
+
+        // Save passenger using DAO
+        return passengerDAO.addPassenger(passenger);
+    }
+
+    // ✅ Check if an email already exists
+    public boolean emailExists(String email) {
+        return passengerDAO.getPassengerByEmail(email) != null;
+    }
+
+
+
+
 }

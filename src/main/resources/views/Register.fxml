@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.busbooking.controllers.RegisterController"
+            prefWidth="500" prefHeight="600">
+
+    <GridPane alignment="CENTER" hgap="10" vgap="10" style="-fx-padding: 20;"
+              AnchorPane.topAnchor="10" AnchorPane.bottomAnchor="10"
+              AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10">
+
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" />
+            <ColumnConstraints hgrow="ALWAYS" />
+        </columnConstraints>
+
+        <rowConstraints>
+            <RowConstraints vgrow="ALWAYS"/>
+        </rowConstraints>
+
+        <Label text="Register" style="-fx-font-size: 18px; -fx-font-weight: bold;"
+               GridPane.columnSpan="2" GridPane.halignment="CENTER"/>
+
+        <Label text="First Name:" GridPane.rowIndex="1"/>
+        <TextField fx:id="firstNameField" promptText="Enter your first name" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Last Name:" GridPane.rowIndex="2"/>
+        <TextField fx:id="lastNameField" promptText="Enter your last name" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Email:" GridPane.rowIndex="3"/>
+        <TextField fx:id="emailField" promptText="Enter your email" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Label text="Phone Number:" GridPane.rowIndex="4"/>
+        <TextField fx:id="phoneField" promptText="Enter your phone number" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+        <Label text="Password:" GridPane.rowIndex="5"/>
+        <PasswordField fx:id="passwordField" promptText="Enter your password" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+        <Label text="Confirm Password:" GridPane.rowIndex="6"/>
+        <PasswordField fx:id="confirmPasswordField" promptText="Re-enter your password" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+        <Label fx:id="errorLabel" textFill="red" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="7"/>
+
+        <Button text="Register" fx:id="registerButton" onAction="#handleRegister"
+                GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="8"/>
+
+        <Hyperlink text="Already have an account? Login" onAction="#handleLoginRedirect"
+                   GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="9"/>
+
+    </GridPane>
+
+</AnchorPane>

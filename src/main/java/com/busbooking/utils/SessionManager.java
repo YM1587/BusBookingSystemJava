@@ -25,3 +25,8 @@ public class SessionManager {
         return loggedInUser != null;
     }
 }
+/*Since your bus booking system needs to track the logged-in user across multiple screens,
+we need a Session Handler to store and retrieve the current user. This will ensure that
+once a passenger logs in, their details are available throughout the system.
+
+ */

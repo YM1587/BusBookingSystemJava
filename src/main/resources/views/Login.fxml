@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="com.busbooking.controllers.LoginController"
+          alignment="CENTER" hgap="15" vgap="15" style="-fx-padding: 40;">
+
+    <!-- Title Label -->
+    <Label text="Passenger Login" style="-fx-font-size: 16px; -fx-font-weight: bold;">
+        <GridPane.columnSpan>2</GridPane.columnSpan>
+        <GridPane.halignment>CENTER</GridPane.halignment>
+    </Label>
+
+    <!-- Email Label & Field -->
+    <Label text="Email:" GridPane.rowIndex="1"/>
+    <TextField fx:id="emailField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+    <!-- Password Label & Field -->
+    <Label text="Password:" GridPane.rowIndex="2"/>
+    <PasswordField fx:id="passwordField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+    <!-- Login Button -->
+    <Button text="Login" fx:id="loginButton" onAction="#handleLogin">
+        <GridPane.rowIndex>3</GridPane.rowIndex>
+        <GridPane.columnSpan>2</GridPane.columnSpan>
+    </Button>
+
+    <!-- Registration Hyperlink -->
+    <Hyperlink text="Don't have an account? Register" onAction="#goToRegister">
+        <GridPane.rowIndex>4</GridPane.rowIndex>
+        <GridPane.columnSpan>2</GridPane.columnSpan>
+        <GridPane.halignment>CENTER</GridPane.halignment>
+    </Hyperlink>
+
+</GridPane>

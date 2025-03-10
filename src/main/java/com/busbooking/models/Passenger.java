@@ -12,6 +12,11 @@ public class Passenger {
     private String role; // "Passenger" or "Admin"
     private Timestamp createdAt; // Timestamp for record creation
 
+
+    //No-argument constructor (Fixes your error)
+    public Passenger() {
+    }
+
     // Constructor
     public Passenger(int passengerId, String firstName, String lastName, String email, String phoneNumber, String passwordHash, String role, Timestamp createdAt) {
         this.passengerId = passengerId;
@@ -23,6 +28,18 @@ public class Passenger {
         this.role = role;
         this.createdAt = createdAt;
     }
+    // Overloaded constructor (Fixes your issue)
+    public Passenger(int passengerId, String firstName, String lastName, String email, String passwordHash) {
+        this.passengerId = passengerId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.phoneNumber = ""; // Default empty
+        this.role = "Passenger"; // Default role
+        this.createdAt = new Timestamp(System.currentTimeMillis()); // Auto timestamp
+    }
+
 
     // Getters and Setters
     public int getPassengerId() { return passengerId; }

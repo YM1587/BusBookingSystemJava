@@ -2,24 +2,71 @@ package com.busbooking.ui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
 
 public class PassengerMain extends Application {
-    @Override
-    public void start(Stage stage) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/Dashboard.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
+    private static Stage primaryStage;
 
-            stage.setTitle("Passenger Dashboard");
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.show();
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource("/views/register.fxml"));
+        Scene scene = new Scene(root, 600, 500);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Register Form");
+        primaryStage.show();
+    }
+
+    /*@Override
+    public void start(Stage stage) {
+        primaryStage = stage;
+        loadLoginScreen();
+    }
+
+    public static void loadLoginScreen() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(PassengerMain.class.getResource("/views/login.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(),600,500);
+
+            primaryStage.setTitle("Passenger Login");
+            primaryStage.setScene(scene);
+            primaryStage.setResizable(false);
+            primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Error loading Dashboard.fxml");
+            System.out.println("Error loading login.fxml");
+        }
+    }*/
+
+    public static void loadDashboardScreen() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(PassengerMain.class.getResource("/views/dashboard.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+
+            primaryStage.setTitle("Passenger Dashboard");
+            primaryStage.setScene(scene);
+            primaryStage.setResizable(false);
+            primaryStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error loading dashboard.fxml");
+        }
+    }
+
+    public static void loadRegisterScreen() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(PassengerMain.class.getResource("/views/register.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+
+            primaryStage.setTitle("Passenger Registration");
+            primaryStage.setScene(scene);
+            primaryStage.setResizable(false);
+            primaryStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error loading register.fxml");
         }
     }
 

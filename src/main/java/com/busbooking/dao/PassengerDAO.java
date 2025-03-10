@@ -1,7 +1,7 @@
 package com.busbooking.dao;
 
-import com.busbooking.models.Passenger;
 import com.busbooking.config.DatabaseConnection;
+import com.busbooking.models.Passenger;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.*;
@@ -12,10 +12,11 @@ public class PassengerDAO {
 
     /**
      * Adds a new passenger to the database.
+     *
      * @param passenger The Passenger object containing details.
-     * Scenario: An admin manually adds a new passenger to the system, possibly without a password requirement.
+     *                  Scenario: An admin manually adds a new passenger to the system, possibly without a password requirement.
      */
-    public void addPassenger(Passenger passenger) {
+    public boolean addPassenger(Passenger passenger) {
         String sql = "INSERT INTO passengers (first_name, last_name, email, phone_number, password_hash, role) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -26,9 +27,12 @@ public class PassengerDAO {
             stmt.setString(5, hashPassword(passenger.getPasswordHash())); // BCrypt hashing
             stmt.setString(6, passenger.getRole());
 
-            stmt.executeUpdate();
+            int rowsInserted = stmt.executeUpdate();
+            return rowsInserted > 0;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
+
         }
     }
 
@@ -63,28 +67,36 @@ public class PassengerDAO {
      * Retrieves a passenger by their email.
      */
     public Passenger getPassengerByEmail(String email) {
+        Connection conn = DatabaseConnection.getConnection();
+        Passenger passenger = null;
+
+        if (conn == null) {
+            System.out.println("Database connection is null!");
+            return null;
+        }
+
         String sql = "SELECT * FROM passengers WHERE email = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
+
             if (rs.next()) {
-                return new Passenger(
-                        rs.getInt("passenger_id"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
+                passenger = new Passenger(
+                        rs.getInt("id"),
+                        rs.getString("firstName"),
+                        rs.getString("lastName"),
                         rs.getString("email"),
-                        rs.getString("phone_number"),
-                        rs.getString("password_hash"),
-                        rs.getString("role"),
-                        rs.getTimestamp("created_at")
+                        rs.getString("password")
                 );
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+
+        return passenger;
     }
+
+
 
     /**
      * Registers a new passenger with a hashed password.
@@ -196,7 +208,6 @@ public class PassengerDAO {
      * Updates passenger details in the database.
      * Updates existing passenger?
      * Scenario: A passenger updates their email or phone number in their profile settings.
-     *
      */
     public void updatePassenger(Passenger passenger) {
         String sql = "UPDATE passengers SET first_name = ?, last_name = ?, email = ?, phone_number = ?, password_hash = ?, role = ? WHERE passenger_id = ?";
