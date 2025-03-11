@@ -67,26 +67,22 @@ public class PassengerDAO {
      * Retrieves a passenger by their email.
      */
     public Passenger getPassengerByEmail(String email) {
-        Connection conn = DatabaseConnection.getConnection();
+        String sql = "SELECT * FROM passengers WHERE email = ?";
         Passenger passenger = null;
 
-        if (conn == null) {
-            System.out.println("Database connection is null!");
-            return null;
-        }
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        String sql = "SELECT * FROM passengers WHERE email = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 passenger = new Passenger(
-                        rs.getInt("id"),
-                        rs.getString("firstName"),
-                        rs.getString("lastName"),
+                        rs.getInt("passenger_id"),   // Make sure your DB column name is correct
+                        rs.getString("first_name"),  // Use "first_name" if that's your actual DB column
+                        rs.getString("last_name"),
                         rs.getString("email"),
-                        rs.getString("password")
+                        rs.getString("password_hash")     // Ensure this matches your DB schema
                 );
             }
         } catch (SQLException e) {
