@@ -2,7 +2,7 @@ package com.busbooking.ui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-//import javafx.scene.Parent;
+
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
@@ -10,14 +10,6 @@ import java.io.IOException;
 public class PassengerMain extends Application {
     private static Stage primaryStage;
 
-   /* @Override
-    public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/views/register.fxml"));
-        Scene scene = new Scene(root, 600, 500);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Register Form");
-        primaryStage.show();
-    }*/
 
     @Override
     public void start(Stage stage) {

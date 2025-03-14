@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <Label text="Bus Search" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+    <HBox spacing="10">
+        <VBox spacing="5">
+            <Label text="From:" />
+            <ComboBox fx:id="fromComboBox" promptText="Select City" />
+        </VBox>
+        <VBox spacing="5">
+            <Label text="To:" />
+            <ComboBox fx:id="toComboBox" promptText="Select City" />
+        </VBox>
+    </HBox>
+
+    <VBox spacing="5">
+        <Label text="Departure Date:" />
+        <DatePicker fx:id="datePicker" />
+    </VBox>
+
+    <Button text="Make a Booking" fx:id="searchButton" />
+</VBox>

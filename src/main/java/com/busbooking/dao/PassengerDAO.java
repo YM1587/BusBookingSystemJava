@@ -78,11 +78,14 @@ public class PassengerDAO {
 
             if (rs.next()) {
                 passenger = new Passenger(
-                        rs.getInt("passenger_id"),   // Make sure your DB column name is correct
-                        rs.getString("first_name"),  // Use "first_name" if that's your actual DB column
+                        rs.getInt("passenger_id"),
+                        rs.getString("first_name"),
                         rs.getString("last_name"),
                         rs.getString("email"),
-                        rs.getString("password_hash")     // Ensure this matches your DB schema
+                        rs.getString("phone_number"),  // Added missing field
+                        rs.getString("password_hash"),
+                        rs.getString("role"),          // Added missing field
+                        rs.getTimestamp("created_at")  // Added missing field
                 );
             }
         } catch (SQLException e) {

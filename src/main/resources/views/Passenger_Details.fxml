@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.PassengerDetailsController">
+
+    <!-- Route Details -->
+    <Label fx:id="routeLabel" text="Passenger Details" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+    <!-- Passenger Information Form -->
+    <GridPane hgap="10" vgap="10" alignment="CENTER">
+        <Label text="First Name:" />
+        <TextField fx:id="firstNameField" GridPane.columnIndex="1"/>
+
+        <Label text="Last Name:" GridPane.rowIndex="1"/>
+        <TextField fx:id="lastNameField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+        <Label text="ID Number:" GridPane.rowIndex="2"/>
+        <TextField fx:id="idNumberField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+        <Label text="Mobile Number:" GridPane.rowIndex="3"/>
+        <TextField fx:id="mobileNumberField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+    </GridPane>
+
+    <!-- Error Message -->
+    <Label fx:id="errorLabel" text="" style="-fx-text-fill: red;" />
+
+    <!-- Proceed to Payment Button -->
+    <Button fx:id="proceedButton" text="Proceed to Pay" disable="true" />
+
+</VBox>
