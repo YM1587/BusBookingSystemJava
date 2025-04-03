@@ -37,9 +37,7 @@ ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;]]></console>
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files>
-      <object connection-id="b287092f-fa19-42f3-8a4e-47bb237f462e" object-ref="schemas/bus_booking/tables/passengers" />
-    </open-files>
+    <open-files />
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="b287092f-fa19-42f3-8a4e-47bb237f462e" />

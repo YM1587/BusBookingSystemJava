@@ -12,9 +12,8 @@ public class PassengerDAO {
 
     /**
      * Adds a new passenger to the database.
-     *
-     * @param passenger The Passenger object containing details.
-     *                  Scenario: An admin manually adds a new passenger to the system, possibly without a password requirement.
+     *The Passenger object containing details.
+     *Scenario: An admin manually adds a new passenger to the system, possibly without a password requirement.
      */
     public boolean addPassenger(Passenger passenger) {
         String sql = "INSERT INTO passengers (first_name, last_name, email, phone_number, password_hash, role) VALUES (?, ?, ?, ?, ?, ?)";
