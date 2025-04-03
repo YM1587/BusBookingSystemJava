@@ -55,6 +55,9 @@ ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;]]></console>
   <component name="DBNavigator.Project.ExecutionManager">
     <retain-sticky-names value="false" />
   </component>
+  <component name="DBNavigator.Project.FileConnectionMappingManager">
+    <mapping file-url="file://$PROJECT_DIR$/sql/database_schema.sql" connection-id="b287092f-fa19-42f3-8a4e-47bb237f462e" session-id="MAIN" current-schema="bus_booking" />
+  </component>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">
     <last-used-operator value="EQUAL" />
     <filters />
