@@ -1,4 +1,4 @@
-package controllers;
+package com.busbooking.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -11,29 +11,25 @@ public class PaymentController {
     @FXML private TextField txtAmount, txtReference;
     @FXML private Button btnFinishPayment;
 
-    private String from, to, date, time;
-    private int ticketCount;
-    private double totalAmount;
+    // Static variables to hold booking details
+    public static String from, to, date, time;
+    public static int ticketCount;
+    public static double totalAmount;
 
-    // Method to receive booking details
-    public void setBookingDetails(String from, String to, String date, String time, int ticketCount, double totalAmount) {
-        this.from = from;
-        this.to = to;
-        this.date = date;
-        this.time = time;
-        this.ticketCount = ticketCount;
-        this.totalAmount = totalAmount;
-
-        // Display details in UI
+    @FXML
+    public void initialize() {
+        // Automatically populate UI labels with booking details
         lblFrom.setText(from);
         lblTo.setText(to);
         lblDate.setText(date);
         lblTime.setText(time);
         lblTickets.setText(String.valueOf(ticketCount));
         lblAmount.setText(String.format("Ksh %.2f", totalAmount));
+
+        // Handle payment when the button is clicked
+        btnFinishPayment.setOnAction(event -> handlePayment());
     }
 
-    @FXML
     private void handlePayment() {
         String amountEntered = txtAmount.getText().trim();
         String transactionRef = txtReference.getText().trim();

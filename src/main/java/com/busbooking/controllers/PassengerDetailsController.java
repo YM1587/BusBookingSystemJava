@@ -1,4 +1,4 @@
-package controllers;
+package com.busbooking.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -99,9 +99,13 @@ public class PassengerDetailsController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/payment.fxml"));
             Parent root = loader.load();
 
-            // Pass data to PaymentController (to be implemented next)
-            PaymentController controller = loader.getController();
-            controller.setPaymentDetails(fromCity, toCity, departureDate, departureTime, fare, selectedSeat);
+            // Pass booking details using static variables in PaymentController
+            PaymentController.from = fromCity;
+            PaymentController.to = toCity;
+            PaymentController.date = departureDate.toString();
+            PaymentController.time = departureTime;
+            PaymentController.ticketCount = 1; // Assuming 1 seat per booking
+            PaymentController.totalAmount = fare;
 
             Stage stage = (Stage) proceedButton.getScene().getWindow();
             stage.setScene(new Scene(root));

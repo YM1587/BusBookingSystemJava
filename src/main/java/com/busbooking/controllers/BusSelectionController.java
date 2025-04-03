@@ -1,4 +1,4 @@
-package controllers;
+package com.busbooking.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
