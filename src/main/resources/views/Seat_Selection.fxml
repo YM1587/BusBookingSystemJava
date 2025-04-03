@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox spacing="15" alignment="CENTER" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SeatSelectionController">
+
+    <!-- Route Details -->
+    <Label fx:id="routeLabel" text="Route Details" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+    <!-- Seat Layout -->
+    <GridPane fx:id="seatGrid" hgap="10" vgap="10" alignment="CENTER" />
+
+    <!-- Selected Seat Display -->
+    <Label fx:id="selectedSeatLabel" text="Selected Seat: None" />
+
+    <!-- Next Button -->
+    <Button fx:id="nextButton" text="Next" disable="true" />
+
+</VBox>
