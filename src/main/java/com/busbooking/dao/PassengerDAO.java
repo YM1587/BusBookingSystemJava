@@ -2,7 +2,7 @@ package com.busbooking.dao;
 
 import com.busbooking.config.DatabaseConnection;
 import com.busbooking.models.Passenger;
-import org.mindrot.jbcrypt.BCrypt;
+import com.busbooking.utils.PasswordUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,26 +12,24 @@ public class PassengerDAO {
 
     /**
      * Adds a new passenger to the database.
-     *The Passenger object containing details.
-     *Scenario: An admin manually adds a new passenger to the system, possibly without a password requirement.
      */
     public boolean addPassenger(Passenger passenger) {
         String sql = "INSERT INTO passengers (first_name, last_name, email, phone_number, password_hash, role) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
             stmt.setString(1, passenger.getFirstName());
             stmt.setString(2, passenger.getLastName());
             stmt.setString(3, passenger.getEmail());
             stmt.setString(4, passenger.getPhoneNumber());
-            stmt.setString(5, hashPassword(passenger.getPasswordHash())); // BCrypt hashing
+            stmt.setString(5, PasswordUtil.hashPassword(passenger.getPasswordHash())); // ✅ Hashing password properly
             stmt.setString(6, passenger.getRole());
 
             int rowsInserted = stmt.executeUpdate();
             return rowsInserted > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error adding passenger: " + e.getMessage());
             return false;
-
         }
     }
 
@@ -42,22 +40,15 @@ public class PassengerDAO {
         String sql = "SELECT * FROM passengers WHERE passenger_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
+
             if (rs.next()) {
-                return new Passenger(
-                        rs.getInt("passenger_id"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getString("email"),
-                        rs.getString("phone_number"),
-                        rs.getString("password_hash"),
-                        rs.getString("role"),
-                        rs.getTimestamp("created_at")
-                );
+                return mapResultSetToPassenger(rs);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error retrieving passenger by ID: " + e.getMessage());
         }
         return null;
     }
@@ -67,8 +58,6 @@ public class PassengerDAO {
      */
     public Passenger getPassengerByEmail(String email) {
         String sql = "SELECT * FROM passengers WHERE email = ?";
-        Passenger passenger = null;
-
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -76,100 +65,41 @@ public class PassengerDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                passenger = new Passenger(
-                        rs.getInt("passenger_id"),   // Make sure your DB column name is correct
-                        rs.getString("first_name"),  // Use "first_name" if that's your actual DB column
-                        rs.getString("last_name"),
-                        rs.getString("email"),
-                        rs.getString("password_hash")     // Ensure this matches your DB schema
-                );
+                return mapResultSetToPassenger(rs);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error retrieving passenger by email: " + e.getMessage());
         }
-
-        return passenger;
-    }
-
-
-
-    /**
-     * Registers a new passenger with a hashed password.
-     * Creates a new passenger?
-     * Used for first-time signup?
-     * Scenario: A user signs up through a registration form, providing an email, password, and other details.
-     */
-    public void registerPassenger(Passenger passenger) {
-        String sql = "INSERT INTO passengers (first_name, last_name, email, phone_number, password_hash, role) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-            stmt.setString(1, passenger.getFirstName());
-            stmt.setString(2, passenger.getLastName());
-            stmt.setString(3, passenger.getEmail());
-            stmt.setString(4, passenger.getPhoneNumber());
-            stmt.setString(5, hashPassword(passenger.getPasswordHash())); // Hashing password using BCrypt
-            stmt.setString(6, passenger.getRole());
-
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        return null;
     }
 
     /**
      * Authenticates a passenger by verifying their email and password.
      */
     public Passenger authenticatePassenger(String email, String password) {
-        String sql = "SELECT * FROM passengers WHERE email = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        Passenger passenger = getPassengerByEmail(email);
 
-            stmt.setString(1, email);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                String storedHash = rs.getString("password_hash");
-                if (BCrypt.checkpw(password, storedHash)) { // Verify password with BCrypt
-                    return new Passenger(
-                            rs.getInt("passenger_id"),
-                            rs.getString("first_name"),
-                            rs.getString("last_name"),
-                            rs.getString("email"),
-                            rs.getString("phone_number"),
-                            rs.getString("password_hash"),
-                            rs.getString("role"),
-                            rs.getTimestamp("created_at")
-                    );
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (passenger != null && PasswordUtil.verifyPassword(password, passenger.getPasswordHash())) {
+            return passenger; // ✅ Correct authentication
         }
-        return null; // Authentication failed
+        return null; // ❌ Authentication failed
     }
 
     /**
      * Checks if an email is already registered.
      */
     public boolean isEmailExists(String email) {
-        String sql = "SELECT email FROM passengers WHERE email = ?";
+        String sql = "SELECT 1 FROM passengers WHERE email = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
-            return rs.next(); // If result exists, email is taken
+            return rs.next(); // ✅ If result exists, email is taken
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error checking email existence: " + e.getMessage());
         }
         return false;
-    }
-
-    /**
-     * Hashes a password using BCrypt.
-     */
-    private String hashPassword(String password) {
-        return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
     /**
@@ -181,58 +111,77 @@ public class PassengerDAO {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
+
             while (rs.next()) {
-                passengers.add(new Passenger(
-                        rs.getInt("passenger_id"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getString("email"),
-                        rs.getString("phone_number"),
-                        rs.getString("password_hash"),
-                        rs.getString("role"),
-                        rs.getTimestamp("created_at")
-                ));
+                passengers.add(mapResultSetToPassenger(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error retrieving all passengers: " + e.getMessage());
         }
         return passengers;
     }
 
     /**
      * Updates passenger details in the database.
-     * Updates existing passenger?
-     * Scenario: A passenger updates their email or phone number in their profile settings.
      */
-    public void updatePassenger(Passenger passenger) {
+    public boolean updatePassenger(Passenger passenger) {
         String sql = "UPDATE passengers SET first_name = ?, last_name = ?, email = ?, phone_number = ?, password_hash = ?, role = ? WHERE passenger_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, passenger.getFirstName());
             stmt.setString(2, passenger.getLastName());
             stmt.setString(3, passenger.getEmail());
             stmt.setString(4, passenger.getPhoneNumber());
-            stmt.setString(5, hashPassword(passenger.getPasswordHash())); // Hash password on update
+
+            // ✅ Only hash password if it's updated
+            if (passenger.getPasswordHash() != null && !passenger.getPasswordHash().isEmpty()) {
+                stmt.setString(5, PasswordUtil.hashPassword(passenger.getPasswordHash()));
+            } else {
+                stmt.setString(5, getPassengerById(passenger.getPassengerId()).getPasswordHash());
+            }
+
             stmt.setString(6, passenger.getRole());
             stmt.setInt(7, passenger.getPassengerId());
 
-            stmt.executeUpdate();
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error updating passenger: " + e.getMessage());
+            return false;
         }
     }
 
     /**
      * Deletes a passenger from the database.
      */
-    public void deletePassenger(int id) {
+    public boolean deletePassenger(int id) {
         String sql = "DELETE FROM passengers WHERE passenger_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setInt(1, id);
-            stmt.executeUpdate();
+            int rowsDeleted = stmt.executeUpdate();
+            return rowsDeleted > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error deleting passenger: " + e.getMessage());
+            return false;
         }
+    }
+
+    /**
+     * Maps a ResultSet row to a Passenger object.
+     */
+    private Passenger mapResultSetToPassenger(ResultSet rs) throws SQLException {
+        return new Passenger(
+                rs.getInt("passenger_id"),
+                rs.getString("first_name"),
+                rs.getString("last_name"),
+                rs.getString("email"),
+                rs.getString("phone_number"),
+                rs.getString("password_hash"),
+                rs.getString("role"),
+                rs.getTimestamp("created_at")
+        );
     }
 }
