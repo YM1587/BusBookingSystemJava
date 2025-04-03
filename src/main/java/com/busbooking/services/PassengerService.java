@@ -6,50 +6,65 @@ import com.busbooking.utils.PasswordUtil;
 
 public class PassengerService {
     private static Passenger loggedInUser;
-    private PassengerDAO passengerDAO; // Added DAO for database interaction
+    private PassengerDAO passengerDAO; // DAO for database interaction
 
     public PassengerService() {
         this.passengerDAO = new PassengerDAO(); // Initialize DAO
     }
 
+    // ✅ Get currently logged-in user
     public Passenger getLoggedInUser() {
         return loggedInUser;
     }
 
+    // ✅ Set the logged-in user
     public void setLoggedInUser(Passenger passenger) {
         loggedInUser = passenger;
     }
 
+    // ✅ Logout user
     public void logoutUser() {
         loggedInUser = null;
     }
 
-    // Added authentication method
+    // ✅ Authenticate user (verify hashed password)
     public Passenger authenticate(String email, String password) {
-        Passenger passenger = passengerDAO.getPassengerByEmail(email);
-        if (passenger != null && passenger.getPasswordHash().equals(password)) {
-            loggedInUser = passenger; // Set the logged-in user
-            return passenger; // Successful authentication
+        try {
+            Passenger passenger = passengerDAO.getPassengerByEmail(email);
+
+            if (passenger != null && PasswordUtil.verifyPassword(password, passenger.getPasswordHash())) {
+                loggedInUser = passenger; // Set logged-in user
+                return passenger; // Successful authentication
+            }
+        } catch (Exception e) {
+            System.out.println("Authentication error: " + e.getMessage());
         }
+
         return null; // Authentication failed
     }
 
     // ✅ Register new passenger with hashed password
     public boolean registerPassenger(Passenger passenger) {
-        // Hash the password before saving
-        String hashedPassword = PasswordUtil.hashPassword(passenger.getPasswordHash());
-        passenger.setPasswordHash(hashedPassword);
+        try {
+            // Hash the password before saving
+            String hashedPassword = PasswordUtil.hashPassword(passenger.getPasswordHash());
+            passenger.setPasswordHash(hashedPassword);
 
-        // Save passenger using DAO
-        return passengerDAO.addPassenger(passenger);
+            // Save passenger using DAO
+            return passengerDAO.addPassenger(passenger);
+        } catch (Exception e) {
+            System.out.println("Error registering passenger: " + e.getMessage());
+            return false;
+        }
     }
 
     // ✅ Check if an email already exists
     public boolean emailExists(String email) {
-        return passengerDAO.getPassengerByEmail(email) != null;
+        try {
+            return passengerDAO.getPassengerByEmail(email) != null;
+        } catch (Exception e) {
+            System.out.println("Error checking email existence: " + e.getMessage());
+            return false; // Assume email doesn't exist if there's an error
+        }
     }
-
-
-
-
 }
