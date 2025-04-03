@@ -1,33 +1,46 @@
 package com.busbooking.utils;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class PasswordUtil {
+
+    /**
+     * Hashes a password using BCrypt with automatic salting.
+     * @param password The plain text password.
+     * @return A securely hashed password.
+     */
     public static String hashPassword(String password) {
         if (password == null || password.isEmpty()) {
             throw new IllegalArgumentException("Password cannot be empty");
         }
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(password.getBytes());
-            byte[] bytes = md.digest();
-            StringBuilder sb = new StringBuilder();
-            for (byte b : bytes) {
-                sb.append(String.format("%02x", b));
-            }
-            return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error hashing password", e);
-        }
+        return BCrypt.hashpw(password, BCrypt.gensalt(12)); // 12 is the work factor (cost parameter)
     }
 
+    /**
+     * Verifies a password against a stored hashed password.
+     * @param enteredPassword The password entered by the user.
+     * @param storedHash The hashed password stored in the database.
+     * @return true if the password matches, false otherwise.
+     */
     public static boolean verifyPassword(String enteredPassword, String storedHash) {
-        return hashPassword(enteredPassword).equals(storedHash);
+        if (enteredPassword == null || storedHash == null || storedHash.isEmpty()) {
+            return false;
+        }
+        return BCrypt.checkpw(enteredPassword, storedHash);
     }
 
-    // Check if password meets security requirements
+    /**
+     * Checks if a password meets security requirements.
+     * @param password The password to check.
+     * @return true if the password is strong, false otherwise.
+     */
     public static boolean isPasswordStrong(String password) {
-        return password.length() >= 8 && password.matches(".*[A-Z].*") && password.matches(".*\\d.*");
+        if (password == null || password.length() < 8) {
+            return false; // Must be at least 8 characters
+        }
+        return password.matches(".*[A-Z].*")   // At least one uppercase letter
+                && password.matches(".*[a-z].*")   // At least one lowercase letter
+                && password.matches(".*\\d.*")     // At least one digit
+                && password.matches(".*[@#$%^&+=!().*].*"); // At least one special character
     }
 }
