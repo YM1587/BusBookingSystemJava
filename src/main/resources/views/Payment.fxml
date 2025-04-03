@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox spacing="15" alignment="CENTER" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.PaymentController">
+
+    <!-- Booking Summary Section -->
+    <Label text="Booking Summary" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+    <GridPane hgap="10" vgap="10">
+        <Label text="From:" />
+        <Label fx:id="lblFrom" text="-" />
+
+        <Label text="To:" />
+        <Label fx:id="lblTo" text="-" />
+
+        <Label text="Date:" />
+        <Label fx:id="lblDate" text="-" />
+
+        <Label text="Departure Time:" />
+        <Label fx:id="lblTime" text="-" />
+
+        <Label text="Tickets:" />
+        <Label fx:id="lblTickets" text="-" />
+
+        <Label text="Total Amount:" />
+        <Label fx:id="lblAmount" text="-" />
+    </GridPane>
+
+    <!-- Payment Form -->
+    <Label text="Enter Payment Details" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+    <VBox spacing="10">
+        <Label text="Amount Paid:" />
+        <TextField fx:id="txtAmount" promptText="Enter amount" />
+
+        <Label text="Transaction Reference:" />
+        <TextField fx:id="txtReference" promptText="Enter transaction reference" />
+
+        <!-- Error message -->
+        <Label fx:id="lblError" text="" style="-fx-text-fill: red;" />
+
+        <Button text="Finish Payment" fx:id="btnFinishPayment" onAction="#handlePayment" />
+    </VBox>
+
+</VBox>
