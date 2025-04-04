@@ -62,7 +62,7 @@ public class  DashboardController {
         try {
             Stage stage = (Stage) searchBusBtn.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Scene scene = new Scene(loader.load());
+            Scene scene = new Scene(loader.load(),600,500);
             stage.setScene(scene);
             stage.setTitle(title);
         } catch (Exception e) {
