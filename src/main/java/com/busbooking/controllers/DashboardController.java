@@ -11,7 +11,7 @@ import com.busbooking.models.Passenger;
 import com.busbooking.utils.SessionManager;
 import java.io.File;
 
-public class DashboardController {
+public class  DashboardController {
     @FXML private Label usernameLabel;
     @FXML private ImageView profilePicture;
     @FXML private Button searchBusBtn, bookingHistoryBtn, logoutBtn;
@@ -31,16 +31,16 @@ public class DashboardController {
         Passenger loggedInUser = SessionManager.getLoggedInUser();
         if (loggedInUser != null) {
             usernameLabel.setText("Welcome, " + loggedInUser.getFirstName() + "!");
-            loadProfilePicture(loggedInUser.getProfileImagePath());
+//            loadProfilePicture(loggedInUser.getProfileImagePath());
         }
     }
 
-    private void loadProfilePicture(String path) {
-        if (path == null || path.isEmpty()) {
-            path = "/assets/default_avatar.png"; // Ensure a default avatar is used
-        }
-        profilePicture.setImage(new Image(getClass().getResourceAsStream(path)));
-    }
+//    private void loadProfilePicture(String path) {
+//        if (path == null || path.isEmpty()) {
+//            path = "/assets/default_avatar.png"; // Ensure a default avatar is used
+//        }
+//        profilePicture.setImage(new Image(getClass().getResourceAsStream(path)));
+//    }
 
     @FXML
     private void handleSearchBus() {
