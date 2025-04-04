@@ -17,9 +17,12 @@ import javafx.event.ActionEvent;
 import javafx.scene.Node;
 
 public class LoginController {
-    @FXML private TextField emailField;
-    @FXML private PasswordField passwordField;
-    @FXML private Button loginButton;
+    @FXML
+    private TextField emailField;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private Button loginButton;
 
 
     @FXML
@@ -28,13 +31,10 @@ public class LoginController {
     }
 
 
-
-
-
     private final PassengerService passengerService = new PassengerService();
 
     @FXML
-    private void handleLogin(ActionEvent event){
+    private void handleLogin(ActionEvent event) {
         String email = emailField.getText();
         String password = passwordField.getText();
 
@@ -43,14 +43,11 @@ public class LoginController {
         if (passenger != null) {
             // Store in session
             SessionManager.setLoggedInUser(passenger);
-            navigateTo("/views/dashboard.fxml", "Dashboard" ,event);
+            navigateTo("/views/dashboard.fxml", "Dashboard", event);
         } else {
             showAlert();
         }
     }
-
-
-
 
 
     @FXML
@@ -60,28 +57,28 @@ public class LoginController {
 
     private void navigateTo(String fxmlPath, String title, ActionEvent event) {
         try {
-            // Get the current stage from the event source
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow(); // Get Stage from event
-            // Load the new FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Scene scene = new Scene(loader.load(),600,500);
+            if (loader.getLocation() == null) {
+                throw new IOException("FXML file not found: " + fxmlPath);
+            }
 
-            // Set the new scene
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(loader.load(), 600, 500);
+
             stage.setScene(scene);
             stage.setTitle(title);
-
-            stage.show(); // Required to update the UI
+            stage.show();
         } catch (IOException e) {
+            System.err.println("Navigation error: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-
-
     private void showAlert() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Login Failed");
-        alert.setContentText("Invalid email or password.");
+        alert.setHeaderText("Authentication Error");
+        alert.setContentText("Invalid email or password. Please try again.");
         alert.showAndWait();
     }
 }
