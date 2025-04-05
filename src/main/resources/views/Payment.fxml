@@ -5,7 +5,7 @@
 <?import javafx.geometry.*?>
 
 <VBox spacing="15" alignment="CENTER" xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.PaymentController">
+      xmlns:fx="http://javafx.com/fxml" fx:controller="com.busbooking.controllers.PaymentController">
 
     <!-- Booking Summary Section -->
     <Label text="Booking Summary" style="-fx-font-size: 18px; -fx-font-weight: bold;" />

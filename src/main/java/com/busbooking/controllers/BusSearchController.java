@@ -51,15 +51,15 @@ public class BusSearchController {
 
     private void loadRoutesFromDatabase() {
         String query = "SELECT * FROM routes";
+        ObservableList<String> startLocations = FXCollections.observableArrayList();
+        ObservableList<String> endLocations = FXCollections.observableArrayList();
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
 
-            ObservableList<String> startLocations = FXCollections.observableArrayList();
-            ObservableList<String> endLocations = FXCollections.observableArrayList();
-
             while (rs.next()) {
+                // Create Route objects and add to list if needed
                 Route route = new Route(
                         rs.getInt("route_id"),
                         rs.getString("route_name"),
@@ -70,19 +70,27 @@ public class BusSearchController {
                 );
                 routes.add(route);
 
-                if (!startLocations.contains(route.getStartLocation())) {
-                    startLocations.add(route.getStartLocation());
+                // Avoid duplicates using contains check
+                String start = route.getStartLocation();
+                String end = route.getEndLocation();
+
+                if (!startLocations.contains(start)) {
+                    startLocations.add(start);
                 }
-                if (!endLocations.contains(route.getEndLocation())) {
-                    endLocations.add(route.getEndLocation());
+                if (!endLocations.contains(end)) {
+                    endLocations.add(end);
                 }
             }
 
             fromComboBox.setItems(startLocations);
             toComboBox.setItems(endLocations);
 
+            System.out.println("Routes loaded: " + routes.size());
+            System.out.println("From cities: " + startLocations);
+            System.out.println("To cities: " + endLocations);
+
         } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to load routes.\n" + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to load routes.");
             e.printStackTrace();
         }
     }
@@ -98,26 +106,25 @@ public class BusSearchController {
         }
 
         if (fromCity.equals(toCity)) {
-            showAlert(Alert.AlertType.ERROR, "Invalid Selection", "Start and destination cities cannot be the same.");
+            showAlert(Alert.AlertType.ERROR, "Invalid Selection", "Departure and destination cannot be the same.");
             return;
         }
 
-        // Find matching route
-        Route selectedRoute = null;
-        for (Route route : routes) {
-            if (route.getStartLocation().equals(fromCity) && route.getEndLocation().equals(toCity)) {
-                selectedRoute = route;
-                break;
-            }
-        }
+        // Find route that matches
+        Route matchingRoute = routes.stream()
+                .filter(r -> r.getStartLocation().equals(fromCity) && r.getEndLocation().equals(toCity))
+                .findFirst()
+                .orElse(null);
 
-        if (selectedRoute == null) {
-            showAlert(Alert.AlertType.ERROR, "Route Not Found", "No available route for selected cities.");
+        if (matchingRoute == null) {
+            showAlert(Alert.AlertType.WARNING, "No Route", "No route found between selected cities.");
             return;
         }
 
-        navigateToBusSelection(selectedRoute, selectedDate);
+        System.out.println("Navigating to Bus Selection: " + matchingRoute);
+        navigateToBusSelection(matchingRoute, selectedDate);
     }
+
 
     private void navigateToBusSelection(Route route, LocalDate date) {
         try {
@@ -132,10 +139,11 @@ public class BusSearchController {
             stage.show();
 
         } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Navigation Error", "Could not load the bus selection screen.");
+            showAlert(Alert.AlertType.ERROR, "Navigation Error", "Could not load the bus selection page.");
             e.printStackTrace();
         }
     }
+
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
