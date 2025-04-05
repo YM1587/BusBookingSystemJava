@@ -69,4 +69,8 @@ public class Route {
     public void setEstimatedDuration(LocalTime estimatedDuration) {
         this.estimatedDuration = estimatedDuration;
     }
+    @Override
+    public String toString() {
+        return startLocation + " → " + endLocation; // This ensures proper display in ComboBox
+    }
 }

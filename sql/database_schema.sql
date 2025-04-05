@@ -12,4 +12,4 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n';
 SHOW VARIABLES LIKE 'secure_file_priv';
-
+select * from routes

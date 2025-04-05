@@ -9,11 +9,11 @@
     <HBox spacing="10">
         <VBox spacing="5">
             <Label text="From:" />
-            <ComboBox fx:id="fromComboBox" promptText="Select City" />
+            <ComboBox fx:id="fromComboBox" promptText="Select Departure City" />
         </VBox>
         <VBox spacing="5">
             <Label text="To:" />
-            <ComboBox fx:id="toComboBox" promptText="Select City" />
+            <ComboBox fx:id="toComboBox" promptText="Select Destination City" />
         </VBox>
     </HBox>
 
