@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -48,7 +49,7 @@ public class BusSelectionController {
         this.departureDate = date;
 
         // Update UI label with route details
-        routeLabel.setText("Available Buses from " + from.getStartLocation() + " to " + to.getEndLocation() + " on " + date);
+        routeLabel.setText(String.format("Available Buses from %s to %s on %s", from.getStartLocation(), to.getEndLocation(), date));
 
         // Load available buses (mock data for now)
         List<Bus> buses = getAvailableBuses();
@@ -83,6 +84,7 @@ public class BusSelectionController {
         Label fareLabel = new Label("💰 $" + bus.fare);
         Button selectButton = new Button("Select");
 
+        // Lambda for button action
         selectButton.setOnAction(event -> navigateToSeatSelection(bus));
 
         card.getChildren().addAll(timeLabel, seatsLabel, fareLabel, selectButton);
@@ -102,7 +104,18 @@ public class BusSelectionController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
+            // Improved error handling: show alert instead of just printing stack trace
             e.printStackTrace();
+            showErrorAlert("Navigation Error", "Failed to navigate to seat selection.");
         }
+    }
+
+    // Utility method for error alert
+    private void showErrorAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

@@ -2,7 +2,6 @@ package com.busbooking.controllers;
 
 import com.busbooking.config.DatabaseConnection;
 import com.busbooking.models.Route;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,10 +18,10 @@ import java.time.LocalDate;
 public class BusSearchController {
 
     @FXML
-    private ComboBox<String> fromComboBox;
+    private ComboBox<Route> fromComboBox;
 
     @FXML
-    private ComboBox<String> toComboBox;
+    private ComboBox<Route> toComboBox;
 
     @FXML
     private DatePicker datePicker;
@@ -51,49 +50,63 @@ public class BusSearchController {
 
     private void loadRoutesFromDatabase() {
         String query = "SELECT * FROM routes";
-        ObservableList<String> startLocations = FXCollections.observableArrayList();
-        ObservableList<String> endLocations = FXCollections.observableArrayList();
+        ObservableList<Route> startRoutes = FXCollections.observableArrayList();
+        ObservableList<Route> endRoutes = FXCollections.observableArrayList();
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                // Create Route objects and add to list if needed
                 Route route = new Route(
                         rs.getInt("route_id"),
                         rs.getString("route_name"),
                         rs.getString("start_location"),
                         rs.getString("end_location"),
                         rs.getBigDecimal("distance_km"),
-                        rs.getTime("estimated_duration").toLocalTime()
+                        rs.getTime("estimated_duration").toLocalTime(),
+                        rs.getBigDecimal("fare")  // Get fare from the result set
                 );
                 routes.add(route);
 
                 // Avoid duplicates using contains check
-                String start = route.getStartLocation();
-                String end = route.getEndLocation();
-
-                if (!startLocations.contains(start)) {
-                    startLocations.add(start);
+                if (!startRoutes.contains(route)) {
+                    startRoutes.add(route);
                 }
-                if (!endLocations.contains(end)) {
-                    endLocations.add(end);
+                if (!endRoutes.contains(route)) {
+                    endRoutes.add(route);
                 }
             }
 
-            fromComboBox.setItems(startLocations);
-            toComboBox.setItems(endLocations);
+            // Set custom display for ComboBox
+            fromComboBox.setItems(startRoutes);
+            toComboBox.setItems(endRoutes);
+
+            // Display the route start and end locations in the ComboBox
+            fromComboBox.setCellFactory(param -> new ListCell<>() {
+                @Override
+                protected void updateItem(Route route, boolean empty) {
+                    super.updateItem(route, empty);
+                    setText(empty ? "" : route.getStartLocation() + " → " + route.getEndLocation());
+                }
+            });
+
+            toComboBox.setCellFactory(param -> new ListCell<>() {
+                @Override
+                protected void updateItem(Route route, boolean empty) {
+                    super.updateItem(route, empty);
+                    setText(empty ? "" : route.getStartLocation() + " → " + route.getEndLocation());
+                }
+            });
 
             System.out.println("Routes loaded: " + routes.size());
-            System.out.println("From cities: " + startLocations);
-            System.out.println("To cities: " + endLocations);
 
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to load routes.");
             e.printStackTrace();
         }
     }
+
     private void handleSearch() {
         System.out.println("Make a Booking button clicked!"); // Debugging
 
@@ -142,6 +155,7 @@ public class BusSearchController {
             return false;
         }
     }
+
     private void navigateToBusSelection(Route from, Route to, LocalDate date) {
         try {
             System.out.println("Loading bus_selection.fxml..."); // Debugging
@@ -169,12 +183,6 @@ public class BusSearchController {
             e.printStackTrace();
         }
     }
-
-
-
-
-
-
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);

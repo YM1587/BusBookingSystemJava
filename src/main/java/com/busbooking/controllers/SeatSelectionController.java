@@ -50,12 +50,18 @@ public class SeatSelectionController {
     }
 
     private void generateSeatLayout() {
-        String[] rows = {"A", "B", "C", "D"};
-        int columns = 4;
+        String[] rows = new String[10];
+        for (int i = 0; i < 9; i++) {
+            rows[i] = String.valueOf(i + 1); // Rows 1-9
+        }
+        rows[9] = "10"; // Row 10
 
+        String[] columns = {"A", "B", "C", "D", "E"}; // 5 columns, A to E for row 10
+
+        // Create seats
         for (int rowIndex = 0; rowIndex < rows.length; rowIndex++) {
-            for (int colIndex = 1; colIndex <= columns; colIndex++) {
-                String seatNumber = rows[rowIndex] + colIndex;
+            for (int colIndex = 0; colIndex < (rowIndex == 9 ? columns.length : 4); colIndex++) { // Row 10 has 5 columns, others have 4
+                String seatNumber = rows[rowIndex] + columns[colIndex];
                 Button seatButton = new Button(seatNumber);
                 seatButton.setStyle(bookedSeats.contains(seatNumber) ? "-fx-background-color: red;" : "-fx-background-color: green;");
 
@@ -67,7 +73,7 @@ public class SeatSelectionController {
                 }
 
                 seatButtons.add(seatButton);
-                seatGrid.add(seatButton, colIndex - 1, rowIndex);
+                seatGrid.add(seatButton, colIndex, rowIndex);
             }
         }
     }

@@ -10,15 +10,17 @@ public class Route {
     private String endLocation;
     private BigDecimal distanceKm;
     private LocalTime estimatedDuration;
+    private BigDecimal fare;
 
     // Constructor
-    public Route(int routeId, String routeName, String startLocation, String endLocation, BigDecimal distanceKm, LocalTime estimatedDuration) {
+    public Route(int routeId, String routeName, String startLocation, String endLocation, BigDecimal distanceKm, LocalTime estimatedDuration, BigDecimal fare) {
         this.routeId = routeId;
         this.routeName = routeName;
         this.startLocation = startLocation;
         this.endLocation = endLocation;
         this.distanceKm = distanceKm;
         this.estimatedDuration = estimatedDuration;
+        this.fare = fare;
     }
 
     // Getters and Setters
@@ -68,6 +70,12 @@ public class Route {
 
     public void setEstimatedDuration(LocalTime estimatedDuration) {
         this.estimatedDuration = estimatedDuration;
+    }
+    public BigDecimal getFare() {
+        return fare;
+    }
+    public void setFare(BigDecimal fare) {
+        this.fare = fare;
     }
     @Override
     public String toString() {
