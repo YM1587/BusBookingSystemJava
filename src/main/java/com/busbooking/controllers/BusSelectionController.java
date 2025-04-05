@@ -99,8 +99,10 @@ public class BusSelectionController {
             SeatSelectionController controller = loader.getController();
             controller.setBusDetails(fromCity, toCity, departureDate, bus.getDepartureTime(), bus.getFare());
 
+            // Set the scene with desired size (width x height)
+            Scene scene = new Scene(root, 1000, 700); // You can customize these values
             Stage stage = (Stage) busListContainer.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

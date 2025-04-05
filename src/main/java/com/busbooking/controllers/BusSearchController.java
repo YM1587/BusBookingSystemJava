@@ -133,8 +133,10 @@ public class BusSearchController {
             BusSelectionController controller = loader.getController();
             controller.setRouteDetails(from, to, date);
 
+            // Set the scene with custom dimensions
+            Scene scene = new Scene(root, 1000, 700); // Adjust width and height as needed
             Stage stage = (Stage) searchButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.setScene(scene);
             stage.show();
 
         } catch (IOException e) {
