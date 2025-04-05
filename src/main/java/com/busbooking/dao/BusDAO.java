@@ -2,6 +2,7 @@ package com.busbooking.dao;
 
 import com.busbooking.config.DatabaseConnection;
 import com.busbooking.models.Bus;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,8 @@ public class BusDAO {
                         rs.getString("bus_number"),
                         rs.getString("bus_type"),
                         rs.getInt("capacity"),
-                        rs.getString("operator_name")
+                        rs.getString("operator_name"),
+                        rs.getInt("route_id") // Add routeId here
                 ));
             }
         } catch (SQLException e) {

@@ -11,6 +11,9 @@
   </component>
   <component name="DBNavigator.Project.DatabaseAssistantManager">
     <assistants>
+      <assistant-state connection-id="2a9d0db3-13d5-4179-a4c8-ec0acbc1283e" default-profile-name="" selected-profile-name="" selected-model-name="" assistant-type="GENERIC" selected-action="SHOW_SQL" availability="UNAVAILABLE" acknowledgement="NONE">
+        <messages />
+      </assistant-state>
       <assistant-state connection-id="b287092f-fa19-42f3-8a4e-47bb237f462e" default-profile-name="" selected-profile-name="" selected-model-name="" assistant-type="GENERIC" selected-action="SHOW_SQL" availability="UNAVAILABLE" acknowledgement="NONE">
         <messages />
       </assistant-state>
@@ -54,7 +57,7 @@ ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;]]></console>
     <retain-sticky-names value="false" />
   </component>
   <component name="DBNavigator.Project.FileConnectionMappingManager">
-    <mapping file-url="file://$PROJECT_DIR$/sql/database_schema.sql" connection-id="b287092f-fa19-42f3-8a4e-47bb237f462e" session-id="MAIN" current-schema="bus_booking" />
+    <mapping file-url="file://$PROJECT_DIR$/sql/database_schema.sql" connection-id="2a9d0db3-13d5-4179-a4c8-ec0acbc1283e" session-id="MAIN" current-schema="bus_booking" />
   </component>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">
     <last-used-operator value="EQUAL" />

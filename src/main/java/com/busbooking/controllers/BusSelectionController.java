@@ -91,22 +91,25 @@ public class BusSelectionController {
         return card;
     }
 
+    // Navigate to the Seat Selection screen
     private void navigateToSeatSelection(Bus bus) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/seat_selection.fxml"));
             Parent root = loader.load();
 
-            // Pass data to SeatSelectionController (will be implemented next)
+            // Extract city names from Route objects
+            String fromCity = fromRoute.getStartLocation();
+            String toCity = toRoute.getEndLocation();
+
+            // Pass data to SeatSelectionController
             SeatSelectionController controller = loader.getController();
-            controller.setBusDetails(fromRoute, toRoute, departureDate, bus.departureTime, bus.fare);
+            controller.setBusDetails(fromCity, toCity, departureDate, bus.getDepartureTime(), bus.getFare());
 
             Stage stage = (Stage) busListContainer.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            // Improved error handling: show alert instead of just printing stack trace
             e.printStackTrace();
-            showErrorAlert("Navigation Error", "Failed to navigate to seat selection.");
         }
     }
 

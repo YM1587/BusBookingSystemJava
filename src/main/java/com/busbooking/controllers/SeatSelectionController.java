@@ -34,7 +34,7 @@ public class SeatSelectionController {
     private String departureTime;
     private double fare;
     private String selectedSeat = null;
-    private final Set<String> bookedSeats = Set.of("A1", "B2", "C3"); // Sample booked seats
+    private final Set<String> bookedSeats = Set.of("1A", "2B", "3C"); // Sample booked seats
     private final Set<Button> seatButtons = new HashSet<>();
 
     public void setBusDetails(String from, String to, LocalDate date, String time, double fare) {
@@ -56,7 +56,7 @@ public class SeatSelectionController {
         }
         rows[9] = "10"; // Row 10
 
-        String[] columns = {"A", "B", "C", "D", "E"}; // 5 columns, A to E for row 10
+        String[] columns = {"A", "B", "C", "D", "E"}; // 5 columns in row 10
 
         // Create seats
         for (int rowIndex = 0; rowIndex < rows.length; rowIndex++) {

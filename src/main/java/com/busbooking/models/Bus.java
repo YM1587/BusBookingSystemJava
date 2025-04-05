@@ -6,14 +6,16 @@ public class Bus {
     private String busType;
     private int capacity;
     private String operatorName;
+    private int routeId;  // New field for routeId
 
     // Constructor
-    public Bus(int busId, String busNumber, String busType, int capacity, String operatorName) {
+    public Bus(int busId, String busNumber, String busType, int capacity, String operatorName, int routeId) {
         this.busId = busId;
         this.busNumber = busNumber;
         this.busType = busType;
         this.capacity = capacity;
         this.operatorName = operatorName;
+        this.routeId = routeId;  // Initialize routeId
     }
 
     // Getters and Setters
@@ -55,5 +57,13 @@ public class Bus {
 
     public void setOperatorName(String operatorName) {
         this.operatorName = operatorName;
+    }
+
+    public int getRouteId() {
+        return routeId;
+    }
+
+    public void setRouteId(int routeId) {
+        this.routeId = routeId;
     }
 }

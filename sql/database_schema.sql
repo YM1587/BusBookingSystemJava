@@ -13,3 +13,11 @@ ENCLOSED BY '"'
 LINES TERMINATED BY '\n';
 SHOW VARIABLES LIKE 'secure_file_priv';
 select * from routes
+ALTER TABLE routes
+ADD COLUMN fare DECIMAL(10, 2);
+ALTER TABLE buses
+ADD COLUMN route_id INT,  -- Add routeId column
+ADD CONSTRAINT fk_route  -- Define the foreign key constraint
+FOREIGN KEY (route_id)   -- Reference the routeId in the Route table
+REFERENCES routes(route_id);  -- Ensure the reference is to the route_id in the routes table
+select * from buses
