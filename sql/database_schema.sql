@@ -22,3 +22,8 @@ REFERENCES routes(route_id);  -- Ensure the reference is to the route_id in the 
 select * from buses
 select * from seats
 select * from routes
+truncate table buses
+DELETE FROM buses;
+DELETE FROM seats;
+delete from routes
+
