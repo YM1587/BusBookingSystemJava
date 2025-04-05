@@ -18,10 +18,10 @@ import java.time.LocalDate;
 public class BusSearchController {
 
     @FXML
-    private ComboBox<Route> fromComboBox;
+    private ComboBox<String> fromComboBox;
 
     @FXML
-    private ComboBox<Route> toComboBox;
+    private ComboBox<String> toComboBox;
 
     @FXML
     private DatePicker datePicker;
@@ -29,13 +29,11 @@ public class BusSearchController {
     @FXML
     private Button searchButton;
 
-    private final ObservableList<Route> routes = FXCollections.observableArrayList();
-
     @FXML
     public void initialize() {
-        loadRoutesFromDatabase();
+        loadRouteLocations();
 
-        // Disable past dates in DatePicker
+        // Disable past dates
         datePicker.setValue(LocalDate.now());
         datePicker.setDayCellFactory(picker -> new DateCell() {
             @Override
@@ -48,138 +46,99 @@ public class BusSearchController {
         searchButton.setOnAction(event -> handleSearch());
     }
 
-    private void loadRoutesFromDatabase() {
-        String query = "SELECT * FROM routes";
-        ObservableList<Route> startRoutes = FXCollections.observableArrayList();
-        ObservableList<Route> endRoutes = FXCollections.observableArrayList();
+    private void loadRouteLocations() {
+        ObservableList<String> startLocations = FXCollections.observableArrayList();
+        ObservableList<String> endLocations = FXCollections.observableArrayList();
+
+        String query = "SELECT DISTINCT start_location, end_location FROM routes";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                Route route = new Route(
+                String start = rs.getString("start_location");
+                String end = rs.getString("end_location");
+
+                if (!startLocations.contains(start)) startLocations.add(start);
+                if (!endLocations.contains(end)) endLocations.add(end);
+            }
+
+            fromComboBox.setItems(startLocations);
+            toComboBox.setItems(endLocations);
+
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to load locations.");
+            e.printStackTrace();
+        }
+    }
+
+    private void handleSearch() {
+        String fromCity = fromComboBox.getValue();
+        String toCity = toComboBox.getValue();
+        LocalDate selectedDate = datePicker.getValue();
+
+        if (fromCity == null || toCity == null || selectedDate == null) {
+            showAlert(Alert.AlertType.ERROR, "Incomplete Selection", "Please select all fields.");
+            return;
+        }
+
+        if (fromCity.equals(toCity)) {
+            showAlert(Alert.AlertType.ERROR, "Invalid Route", "Departure and destination cannot be the same.");
+            return;
+        }
+
+        // Fetch matching route
+        Route selectedRoute = getRouteByCities(fromCity, toCity);
+        if (selectedRoute == null) {
+            showAlert(Alert.AlertType.ERROR, "Route Not Found", "No route found between the selected cities.");
+            return;
+        }
+
+        // Proceed to bus selection screen
+        navigateToBusSelection(selectedRoute, selectedRoute, selectedDate);
+    }
+
+    private Route getRouteByCities(String start, String end) {
+        String query = "SELECT * FROM routes WHERE start_location = ? AND end_location = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, start);
+            stmt.setString(2, end);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new Route(
                         rs.getInt("route_id"),
                         rs.getString("route_name"),
                         rs.getString("start_location"),
                         rs.getString("end_location"),
                         rs.getBigDecimal("distance_km"),
                         rs.getTime("estimated_duration").toLocalTime(),
-                        rs.getBigDecimal("fare")  // Get fare from the result set
+                        rs.getBigDecimal("fare")
                 );
-                routes.add(route);
-
-                // Avoid duplicates using contains check
-                if (!startRoutes.contains(route)) {
-                    startRoutes.add(route);
-                }
-                if (!endRoutes.contains(route)) {
-                    endRoutes.add(route);
-                }
             }
-
-            // Set custom display for ComboBox
-            fromComboBox.setItems(startRoutes);
-            toComboBox.setItems(endRoutes);
-
-            // Display the route start and end locations in the ComboBox
-            fromComboBox.setCellFactory(param -> new ListCell<>() {
-                @Override
-                protected void updateItem(Route route, boolean empty) {
-                    super.updateItem(route, empty);
-                    setText(empty ? "" : route.getStartLocation() + " → " + route.getEndLocation());
-                }
-            });
-
-            toComboBox.setCellFactory(param -> new ListCell<>() {
-                @Override
-                protected void updateItem(Route route, boolean empty) {
-                    super.updateItem(route, empty);
-                    setText(empty ? "" : route.getStartLocation() + " → " + route.getEndLocation());
-                }
-            });
-
-            System.out.println("Routes loaded: " + routes.size());
-
         } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to load routes.");
             e.printStackTrace();
         }
-    }
-
-    private void handleSearch() {
-        System.out.println("Make a Booking button clicked!"); // Debugging
-
-        Route fromRoute = fromComboBox.getValue();
-        Route toRoute = toComboBox.getValue();
-        LocalDate selectedDate = datePicker.getValue();
-
-        // Check if the user has selected valid routes and a date
-        if (fromRoute == null || toRoute == null || selectedDate == null) {
-            showAlert(Alert.AlertType.ERROR, "Incomplete Selection", "Please select all fields before proceeding.");
-            return;
-        }
-
-        // Prevent the user from selecting the same route for both from and to
-        if (fromRoute.getRouteId() == toRoute.getRouteId()) {
-            showAlert(Alert.AlertType.ERROR, "Invalid Selection", "Departure and destination routes cannot be the same.");
-            return;
-        }
-
-        // Query the database to check if there is a route between the selected cities
-        if (!isRouteAvailable(fromRoute, toRoute)) {
-            showAlert(Alert.AlertType.ERROR, "No Route Found", "No route found between " + fromRoute.getStartLocation() + " and " + toRoute.getEndLocation() + ".");
-            return;
-        }
-
-        // If everything is okay, proceed to the next step
-        System.out.println("Navigating to Bus Selection with: " + fromRoute.getStartLocation() + " → " + toRoute.getEndLocation() + " on " + selectedDate);
-        navigateToBusSelection(fromRoute, toRoute, selectedDate);
-    }
-
-    // Method to check if a route exists between the selected cities
-    private boolean isRouteAvailable(Route fromRoute, Route toRoute) {
-        String query = "SELECT * FROM routes WHERE start_location = ? AND end_location = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-
-            stmt.setString(1, fromRoute.getStartLocation());
-            stmt.setString(2, toRoute.getEndLocation());
-
-            ResultSet rs = stmt.executeQuery();
-            return rs.next();  // Returns true if a row is found, meaning the route exists
-
-        } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to check for routes.");
-            e.printStackTrace();
-            return false;
-        }
+        return null;
     }
 
     private void navigateToBusSelection(Route from, Route to, LocalDate date) {
         try {
-            System.out.println("Loading bus_selection.fxml..."); // Debugging
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/bus_selection.fxml"));
             Parent root = loader.load();
 
-            // Pass data to BusSelectionController
             BusSelectionController controller = loader.getController();
-            if (controller == null) {
-                System.out.println("Error: BusSelectionController not found.");
-                return;
-            }
-
-            // Pass the entire Route objects (from and to) to the BusSelectionController
             controller.setRouteDetails(from, to, date);
 
             Stage stage = (Stage) searchButton.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
-            System.out.println("Navigation successful!"); // Debugging
 
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Navigation Error", "Could not load the bus selection page.");
-            System.out.println("Error loading bus_selection.fxml: " + e.getMessage());
             e.printStackTrace();
         }
     }

@@ -29,35 +29,47 @@ public class BusSelectionController {
     private Route toRoute;
     private LocalDate departureDate;
 
-    // Bus data structure
+    // Local inner Bus class with proper getters
     public static class Bus {
-        String departureTime;
-        int availableSeats;
-        double fare;
+        private String departureTime;
+        private int availableSeats;
+        private double fare;
 
         public Bus(String departureTime, int availableSeats, double fare) {
             this.departureTime = departureTime;
             this.availableSeats = availableSeats;
             this.fare = fare;
         }
+
+        public String getDepartureTime() {
+            return departureTime;
+        }
+
+        public int getAvailableSeats() {
+            return availableSeats;
+        }
+
+        public double getFare() {
+            return fare;
+        }
     }
 
-    // Updated method to accept Route objects
+    // Accept Route objects and date
     public void setRouteDetails(Route from, Route to, LocalDate date) {
         this.fromRoute = from;
         this.toRoute = to;
         this.departureDate = date;
 
-        // Update UI label with route details
-        routeLabel.setText(String.format("Available Buses from %s to %s on %s", from.getStartLocation(), to.getEndLocation(), date));
+        routeLabel.setText(String.format("Available Buses from %s to %s on %s",
+                from.getStartLocation(), to.getEndLocation(), date));
 
-        // Load available buses (mock data for now)
+        // Load buses (replace with DB logic later)
         List<Bus> buses = getAvailableBuses();
         displayBuses(buses);
     }
 
+    // Mock data — you can replace with real DB query
     private List<Bus> getAvailableBuses() {
-        // Sample data (can be replaced with database retrieval)
         List<Bus> buses = new ArrayList<>();
         buses.add(new Bus("08:00 AM", 5, 25.50));
         buses.add(new Bus("10:30 AM", 12, 30.00));
@@ -67,7 +79,6 @@ public class BusSelectionController {
 
     private void displayBuses(List<Bus> buses) {
         busListContainer.getChildren().clear();
-
         for (Bus bus : buses) {
             HBox busCard = createBusCard(bus);
             busListContainer.getChildren().add(busCard);
@@ -79,25 +90,22 @@ public class BusSelectionController {
         card.setStyle("-fx-border-color: black; -fx-padding: 10; -fx-background-color: #f4f4f4;");
         card.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-        Label timeLabel = new Label("🕒 " + bus.departureTime);
-        Label seatsLabel = new Label("🪑 Seats: " + bus.availableSeats);
-        Label fareLabel = new Label("💰 $" + bus.fare);
+        Label timeLabel = new Label("🕒 " + bus.getDepartureTime());
+        Label seatsLabel = new Label("🪑 Seats: " + bus.getAvailableSeats());
+        Label fareLabel = new Label("💰 $" + bus.getFare());
         Button selectButton = new Button("Select");
 
-        // Lambda for button action
         selectButton.setOnAction(event -> navigateToSeatSelection(bus));
 
         card.getChildren().addAll(timeLabel, seatsLabel, fareLabel, selectButton);
         return card;
     }
 
-    // Navigate to the Seat Selection screen
     private void navigateToSeatSelection(Bus bus) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/seat_selection.fxml"));
             Parent root = loader.load();
 
-            // Extract city names from Route objects
             String fromCity = fromRoute.getStartLocation();
             String toCity = toRoute.getEndLocation();
 
@@ -110,10 +118,10 @@ public class BusSelectionController {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
+            showErrorAlert("Navigation Error", "Failed to load seat selection screen.");
         }
     }
 
-    // Utility method for error alert
     private void showErrorAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
