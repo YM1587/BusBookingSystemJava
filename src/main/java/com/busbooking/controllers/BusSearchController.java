@@ -94,55 +94,86 @@ public class BusSearchController {
             e.printStackTrace();
         }
     }
-
     private void handleSearch() {
-        String fromCity = fromComboBox.getValue();
-        String toCity = toComboBox.getValue();
+        System.out.println("Make a Booking button clicked!"); // Debugging
+
+        Route fromRoute = fromComboBox.getValue();
+        Route toRoute = toComboBox.getValue();
         LocalDate selectedDate = datePicker.getValue();
 
-        if (fromCity == null || toCity == null || selectedDate == null) {
+        // Check if the user has selected valid routes and a date
+        if (fromRoute == null || toRoute == null || selectedDate == null) {
             showAlert(Alert.AlertType.ERROR, "Incomplete Selection", "Please select all fields before proceeding.");
             return;
         }
 
-        if (fromCity.equals(toCity)) {
-            showAlert(Alert.AlertType.ERROR, "Invalid Selection", "Departure and destination cannot be the same.");
+        // Prevent the user from selecting the same route for both from and to
+        if (fromRoute.getRouteId() == toRoute.getRouteId()) {
+            showAlert(Alert.AlertType.ERROR, "Invalid Selection", "Departure and destination routes cannot be the same.");
             return;
         }
 
-        // Find route that matches
-        Route matchingRoute = routes.stream()
-                .filter(r -> r.getStartLocation().equals(fromCity) && r.getEndLocation().equals(toCity))
-                .findFirst()
-                .orElse(null);
-
-        if (matchingRoute == null) {
-            showAlert(Alert.AlertType.WARNING, "No Route", "No route found between selected cities.");
+        // Query the database to check if there is a route between the selected cities
+        if (!isRouteAvailable(fromRoute, toRoute)) {
+            showAlert(Alert.AlertType.ERROR, "No Route Found", "No route found between " + fromRoute.getStartLocation() + " and " + toRoute.getEndLocation() + ".");
             return;
         }
 
-        System.out.println("Navigating to Bus Selection: " + matchingRoute);
-        navigateToBusSelection(matchingRoute, selectedDate);
+        // If everything is okay, proceed to the next step
+        System.out.println("Navigating to Bus Selection with: " + fromRoute.getStartLocation() + " → " + toRoute.getEndLocation() + " on " + selectedDate);
+        navigateToBusSelection(fromRoute, toRoute, selectedDate);
     }
 
+    // Method to check if a route exists between the selected cities
+    private boolean isRouteAvailable(Route fromRoute, Route toRoute) {
+        String query = "SELECT * FROM routes WHERE start_location = ? AND end_location = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
 
-    private void navigateToBusSelection(Route route, LocalDate date) {
+            stmt.setString(1, fromRoute.getStartLocation());
+            stmt.setString(2, toRoute.getEndLocation());
+
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();  // Returns true if a row is found, meaning the route exists
+
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to check for routes.");
+            e.printStackTrace();
+            return false;
+        }
+    }
+    private void navigateToBusSelection(Route from, Route to, LocalDate date) {
         try {
+            System.out.println("Loading bus_selection.fxml..."); // Debugging
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/bus_selection.fxml"));
             Parent root = loader.load();
 
+            // Pass data to BusSelectionController
             BusSelectionController controller = loader.getController();
-            controller.setRouteDetails(route.getStartLocation(), route.getEndLocation(), date);
+            if (controller == null) {
+                System.out.println("Error: BusSelectionController not found.");
+                return;
+            }
+
+            // Pass the entire Route objects (from and to) to the BusSelectionController
+            controller.setRouteDetails(from, to, date);
 
             Stage stage = (Stage) searchButton.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
+            System.out.println("Navigation successful!"); // Debugging
 
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Navigation Error", "Could not load the bus selection page.");
+            System.out.println("Error loading bus_selection.fxml: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
+
+
+
+
 
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {

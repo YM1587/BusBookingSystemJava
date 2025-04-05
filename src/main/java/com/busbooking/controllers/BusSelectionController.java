@@ -1,5 +1,6 @@
 package com.busbooking.controllers;
 
+import com.busbooking.models.Route;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,8 +24,8 @@ public class BusSelectionController {
     @FXML
     private VBox busListContainer;
 
-    private String fromCity;
-    private String toCity;
+    private Route fromRoute;
+    private Route toRoute;
     private LocalDate departureDate;
 
     // Bus data structure
@@ -39,13 +41,14 @@ public class BusSelectionController {
         }
     }
 
-    public void setRouteDetails(String from, String to, LocalDate date) {
-        this.fromCity = from;
-        this.toCity = to;
+    // Updated method to accept Route objects
+    public void setRouteDetails(Route from, Route to, LocalDate date) {
+        this.fromRoute = from;
+        this.toRoute = to;
         this.departureDate = date;
 
-        // Update UI label
-        routeLabel.setText("Available Buses from " + from + " to " + to + " on " + date);
+        // Update UI label with route details
+        routeLabel.setText("Available Buses from " + from.getStartLocation() + " to " + to.getEndLocation() + " on " + date);
 
         // Load available buses (mock data for now)
         List<Bus> buses = getAvailableBuses();
@@ -93,7 +96,7 @@ public class BusSelectionController {
 
             // Pass data to SeatSelectionController (will be implemented next)
             SeatSelectionController controller = loader.getController();
-            controller.setBusDetails(fromCity, toCity, departureDate, bus.departureTime, bus.fare);
+            controller.setBusDetails(fromRoute, toRoute, departureDate, bus.departureTime, bus.fare);
 
             Stage stage = (Stage) busListContainer.getScene().getWindow();
             stage.setScene(new Scene(root));
