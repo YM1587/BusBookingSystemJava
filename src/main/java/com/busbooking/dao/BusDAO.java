@@ -38,7 +38,7 @@ public class BusDAO {
                         rs.getString("route_name"),
                         rs.getString("start_location"),
                         rs.getString("end_location"),
-                        rs.getBigDecimal("fare"),
+                        rs.getDouble("fare"),
                         rs.getInt("available_seats"),
                         rs.getString("departure_time") // Set departure time
                 ));
@@ -73,7 +73,7 @@ public class BusDAO {
                         rs.getString("route_name"),
                         rs.getString("start_location"),
                         rs.getString("end_location"),
-                        rs.getBigDecimal("fare"),
+                        rs.getDouble("fare"),
                         rs.getInt("available_seats"),
                         rs.getString("departure_time") // Set departure time
                 ));

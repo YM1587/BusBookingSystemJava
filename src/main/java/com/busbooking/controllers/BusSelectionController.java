@@ -57,14 +57,9 @@ public class BusSelectionController {
     // Fetch buses from the database using the BusDAO
     private List<Bus> getAvailableBuses() {
         List<Bus> buses = new ArrayList<>();
-        try {
-            // Assuming routeId is available in the Route object
-            int routeId = fromRoute.getRouteId();  // Assuming Route class has getRouteId method
-            buses = busDAO.getBusesByRoute(routeId);  // Fetching buses for the selected route
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showErrorAlert("Database Error", "Failed to fetch buses from the database.");
-        }
+        // Assuming routeId is available in the Route object
+        int routeId = fromRoute.getRouteId();  // Assuming Route class has getRouteId method
+        buses = busDAO.getBusesByRoute(routeId);  // Fetching buses for the selected route
         return buses;
     }
 

@@ -1,7 +1,5 @@
 package com.busbooking.models;
 
-import java.math.BigDecimal;
-
 
 public class Bus {
     private String busNumber;
@@ -11,11 +9,11 @@ public class Bus {
     private String routeName;
     private String startLocation;
     private String endLocation;
-    private BigDecimal fare;
+    private double fare;
     private int availableSeats;
     private String departureTime; // Add this field for departure time
 
-    public Bus(String busNumber, String busType, int capacity, String operatorName, String routeName, String startLocation, String endLocation, BigDecimal fare, int availableSeats, String departureTime) {
+    public Bus(String busNumber, String busType, int capacity, String operatorName, String routeName, String startLocation, String endLocation, double fare, int availableSeats, String departureTime) {
         this.busNumber = busNumber;
         this.busType = busType;
         this.capacity = capacity;
@@ -57,7 +55,7 @@ public class Bus {
         return endLocation;
     }
 
-    public BigDecimal getFare() {
+    public double getFare() {
         return fare;
     }
 
