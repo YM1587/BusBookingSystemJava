@@ -1,6 +1,8 @@
 package com.busbooking.controllers;
 
+import com.busbooking.dao.BusDAO;
 import com.busbooking.models.Route;
+import com.busbooking.models.Bus;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,6 +15,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,29 +33,11 @@ public class BusSelectionController {
     private Route toRoute;
     private LocalDate departureDate;
 
-    // Local inner Bus class with proper getters
-    public static class Bus {
-        private String departureTime;
-        private int availableSeats;
-        private double fare;
+    private BusDAO busDAO;
 
-        public Bus(String departureTime, int availableSeats, double fare) {
-            this.departureTime = departureTime;
-            this.availableSeats = availableSeats;
-            this.fare = fare;
-        }
-
-        public String getDepartureTime() {
-            return departureTime;
-        }
-
-        public int getAvailableSeats() {
-            return availableSeats;
-        }
-
-        public double getFare() {
-            return fare;
-        }
+    // Initialize BusDAO
+    public BusSelectionController() {
+        this.busDAO = new BusDAO();  // You should have a DAO to handle the database interactions
     }
 
     // Accept Route objects and date
@@ -63,17 +49,22 @@ public class BusSelectionController {
         routeLabel.setText(String.format("Available Buses from %s to %s on %s",
                 from.getStartLocation(), to.getEndLocation(), date));
 
-        // Load buses (replace with DB logic later)
+        // Load buses from the database
         List<Bus> buses = getAvailableBuses();
         displayBuses(buses);
     }
 
-    // Mock data — you can replace with real DB query
+    // Fetch buses from the database using the BusDAO
     private List<Bus> getAvailableBuses() {
         List<Bus> buses = new ArrayList<>();
-        buses.add(new Bus("08:00 AM", 5, 25.50));
-        buses.add(new Bus("10:30 AM", 12, 30.00));
-        buses.add(new Bus("01:00 PM", 7, 22.75));
+        try {
+            // Assuming routeId is available in the Route object
+            int routeId = fromRoute.getRouteId();  // Assuming Route class has getRouteId method
+            buses = busDAO.getBusesByRoute(routeId);  // Fetching buses for the selected route
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showErrorAlert("Database Error", "Failed to fetch buses from the database.");
+        }
         return buses;
     }
 
@@ -90,9 +81,9 @@ public class BusSelectionController {
         card.setStyle("-fx-border-color: black; -fx-padding: 10; -fx-background-color: #f4f4f4;");
         card.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-        Label timeLabel = new Label("🕒 " + bus.getDepartureTime());
-        Label seatsLabel = new Label("🪑 Seats: " + bus.getAvailableSeats());
-        Label fareLabel = new Label("💰 $" + bus.getFare());
+        Label timeLabel = new Label("🕒 Departure Time: " + bus.getDepartureTime());  // This now works
+        Label seatsLabel = new Label("🪑 Available Seats: " + bus.getAvailableSeats());
+        Label fareLabel = new Label("💰 Fare: $" + bus.getFare());
         Button selectButton = new Button("Select");
 
         selectButton.setOnAction(event -> navigateToSeatSelection(bus));

@@ -1,6 +1,7 @@
 package com.busbooking.models;
+
 import java.math.BigDecimal;
-import java.time.LocalTime;
+
 
 public class Bus {
     private String busNumber;
@@ -12,8 +13,9 @@ public class Bus {
     private String endLocation;
     private BigDecimal fare;
     private int availableSeats;
+    private String departureTime; // Add this field for departure time
 
-    public Bus(String busNumber, String busType, int capacity, String operatorName, String routeName, String startLocation, String endLocation, BigDecimal fare, int availableSeats) {
+    public Bus(String busNumber, String busType, int capacity, String operatorName, String routeName, String startLocation, String endLocation, BigDecimal fare, int availableSeats, String departureTime) {
         this.busNumber = busNumber;
         this.busType = busType;
         this.capacity = capacity;
@@ -23,6 +25,7 @@ public class Bus {
         this.endLocation = endLocation;
         this.fare = fare;
         this.availableSeats = availableSeats;
+        this.departureTime = departureTime; // Initialize departure time
     }
 
     // Getters and setters
@@ -60,5 +63,9 @@ public class Bus {
 
     public int getAvailableSeats() {
         return availableSeats;
+    }
+
+    public String getDepartureTime() {  // Add getter for departureTime
+        return departureTime;
     }
 }
