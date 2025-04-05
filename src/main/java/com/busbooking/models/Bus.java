@@ -1,69 +1,64 @@
 package com.busbooking.models;
+import java.math.BigDecimal;
+import java.time.LocalTime;
 
 public class Bus {
-    private int busId;
     private String busNumber;
     private String busType;
     private int capacity;
     private String operatorName;
-    private int routeId;  // New field for routeId
+    private String routeName;
+    private String startLocation;
+    private String endLocation;
+    private BigDecimal fare;
+    private int availableSeats;
 
-    // Constructor
-    public Bus(int busId, String busNumber, String busType, int capacity, String operatorName, int routeId) {
-        this.busId = busId;
+    public Bus(String busNumber, String busType, int capacity, String operatorName, String routeName, String startLocation, String endLocation, BigDecimal fare, int availableSeats) {
         this.busNumber = busNumber;
         this.busType = busType;
         this.capacity = capacity;
         this.operatorName = operatorName;
-        this.routeId = routeId;  // Initialize routeId
+        this.routeName = routeName;
+        this.startLocation = startLocation;
+        this.endLocation = endLocation;
+        this.fare = fare;
+        this.availableSeats = availableSeats;
     }
 
-    // Getters and Setters
-    public int getBusId() {
-        return busId;
-    }
-
-    public void setBusId(int busId) {
-        this.busId = busId;
-    }
-
+    // Getters and setters
     public String getBusNumber() {
         return busNumber;
-    }
-
-    public void setBusNumber(String busNumber) {
-        this.busNumber = busNumber;
     }
 
     public String getBusType() {
         return busType;
     }
 
-    public void setBusType(String busType) {
-        this.busType = busType;
-    }
-
     public int getCapacity() {
         return capacity;
-    }
-
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
     }
 
     public String getOperatorName() {
         return operatorName;
     }
 
-    public void setOperatorName(String operatorName) {
-        this.operatorName = operatorName;
+    public String getRouteName() {
+        return routeName;
     }
 
-    public int getRouteId() {
-        return routeId;
+    public String getStartLocation() {
+        return startLocation;
     }
 
-    public void setRouteId(int routeId) {
-        this.routeId = routeId;
+    public String getEndLocation() {
+        return endLocation;
+    }
+
+    public BigDecimal getFare() {
+        return fare;
+    }
+
+    public int getAvailableSeats() {
+        return availableSeats;
     }
 }
