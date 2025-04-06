@@ -1,6 +1,5 @@
 package com.busbooking.models;
 
-
 public class Bus {
     private String busNumber;
     private String busType;
@@ -10,10 +9,11 @@ public class Bus {
     private String startLocation;
     private String endLocation;
     private double fare;
-    private int availableSeats;
-    private String departureTime; // Add this field for departure time
+    private String departureTime; // Field for departure time
 
-    public Bus(String busNumber, String busType, int capacity, String operatorName, String routeName, String startLocation, String endLocation, double fare, int availableSeats, String departureTime) {
+    // Constructor
+    public Bus(String busNumber, String busType, int capacity, String operatorName, String routeName,
+               String startLocation, String endLocation, double fare, String departureTime) {
         this.busNumber = busNumber;
         this.busType = busType;
         this.capacity = capacity;
@@ -22,11 +22,10 @@ public class Bus {
         this.startLocation = startLocation;
         this.endLocation = endLocation;
         this.fare = fare;
-        this.availableSeats = availableSeats;
-        this.departureTime = departureTime; // Initialize departure time
+        this.departureTime = departureTime;
     }
 
-    // Getters and setters
+    // Getters
     public String getBusNumber() {
         return busNumber;
     }
@@ -59,11 +58,23 @@ public class Bus {
         return fare;
     }
 
-    public int getAvailableSeats() {
-        return availableSeats;
+    public String getDepartureTime() {
+        return departureTime;
     }
 
-    public String getDepartureTime() {  // Add getter for departureTime
-        return departureTime;
+    // Override toString() for easy logging and debugging
+    @Override
+    public String toString() {
+        return "Bus{" +
+                "busNumber='" + busNumber + '\'' +
+                ", busType='" + busType + '\'' +
+                ", capacity=" + capacity +
+                ", operatorName='" + operatorName + '\'' +
+                ", routeName='" + routeName + '\'' +
+                ", startLocation='" + startLocation + '\'' +
+                ", endLocation='" + endLocation + '\'' +
+                ", fare=" + fare +
+                ", departureTime='" + departureTime + '\'' +
+                '}';
     }
 }
