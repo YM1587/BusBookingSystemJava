@@ -118,4 +118,7 @@ SELECT end_location FROM routes;
 DESCRIBE routes;
 SELECT DISTINCT TRIM(start_location), TRIM(end_location) FROM routes WHERE start_location IS NOT NULL AND end_location IS NOT NULL;
 SELECT DISTINCT start_location, end_location FROM routes;
+SELECT COUNT(*) AS booked_seats
+FROM seats
+WHERE bus_id = ? AND seat_status = 'booked';
 

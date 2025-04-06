@@ -15,8 +15,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +35,7 @@ public class BusSelectionController {
 
     // Initialize BusDAO
     public BusSelectionController() {
-        this.busDAO = new BusDAO();  // You should have a DAO to handle the database interactions
+        this.busDAO = new BusDAO();  // DAO to handle database interactions
     }
 
     // Accept Route objects and date
@@ -57,39 +55,49 @@ public class BusSelectionController {
     // Fetch buses from the database using the BusDAO
     private List<Bus> getAvailableBuses() {
         List<Bus> buses = new ArrayList<>();
-        // Assuming routeId is available in the Route object
         int routeId = fromRoute.getRouteId();  // Assuming Route class has getRouteId method
         buses = busDAO.getBusesByRoute(routeId);  // Fetching buses for the selected route
         return buses;
     }
 
+    // Display buses on the UI
     private void displayBuses(List<Bus> buses) {
         busListContainer.getChildren().clear();
-        for (Bus bus : buses) {
-            HBox busCard = createBusCard(bus);
-            busListContainer.getChildren().add(busCard);
+
+        // Check if no buses are available for the selected route
+        if (buses.isEmpty()) {
+            Label noBusesLabel = new Label("No buses available for this route at the selected time.");
+            busListContainer.getChildren().add(noBusesLabel);
+        } else {
+            // If buses are available, display each bus
+            for (Bus bus : buses) {
+                HBox busCard = createBusCard(bus);
+                busListContainer.getChildren().add(busCard);
+            }
         }
     }
 
+    // Create a card for each bus
     private HBox createBusCard(Bus bus) {
         HBox card = new HBox(20);
         card.setStyle("-fx-border-color: black; -fx-padding: 10; -fx-background-color: #f4f4f4;");
         card.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-        // Update to display available seats from dynamic calculation
-        int availableSeats = bus.getAvailableSeats();  // Fetching from the dynamic result
-        Label timeLabel = new Label("🕒 Departure Time: " + bus.getDepartureTime());  // This now works
-        Label seatsLabel = new Label("🪑 Available Seats: " + availableSeats); // Displaying available seats dynamically
+        // Fetch the available seats from the Bus object (it is now included in the model)
+        int availableSeats = bus.getAvailableSeats();  // Fetching from the Bus model
+        Label timeLabel = new Label("🕒 Departure Time: " + bus.getDepartureTime());
+        Label seatsLabel = new Label("🪑 Available Seats: " + availableSeats);
         Label fareLabel = new Label("💰 Fare: $" + bus.getFare());
         Button selectButton = new Button("Select");
 
+        // Button action to navigate to Seat Selection screen
         selectButton.setOnAction(event -> navigateToSeatSelection(bus));
 
         card.getChildren().addAll(timeLabel, seatsLabel, fareLabel, selectButton);
         return card;
     }
 
-
+    // Navigate to the Seat Selection screen
     private void navigateToSeatSelection(Bus bus) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/seat_selection.fxml"));
@@ -102,8 +110,8 @@ public class BusSelectionController {
             SeatSelectionController controller = loader.getController();
             controller.setBusDetails(fromCity, toCity, departureDate, bus.getDepartureTime(), bus.getFare());
 
-            // Set the scene with desired size (width x height)
-            Scene scene = new Scene(root, 1000, 700); // You can customize these values
+            // Set the scene with desired size
+            Scene scene = new Scene(root, 1000, 700);
             Stage stage = (Stage) busListContainer.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -113,6 +121,7 @@ public class BusSelectionController {
         }
     }
 
+    // Show an error alert
     private void showErrorAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);

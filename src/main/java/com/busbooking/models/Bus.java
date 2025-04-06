@@ -3,7 +3,7 @@ package com.busbooking.models;
 public class Bus {
     private String busNumber;
     private String busType;
-    private int capacity;
+    private int capacity = 41;  // Default capacity
     private String operatorName;
     private String routeName;
     private String startLocation;
@@ -13,21 +13,20 @@ public class Bus {
     private int availableSeats; // Field for available seats
 
     // Constructor
-    public Bus(String busNumber, String busType, int capacity, String operatorName, String routeName,
-               String startLocation, String endLocation, double fare, String departureTime, int availableSeats) {
+    public Bus(String busNumber, String busType, String operatorName, String routeName,
+               String startLocation, String endLocation, double fare, String departureTime) {
         this.busNumber = busNumber;
         this.busType = busType;
-        this.capacity = capacity;
         this.operatorName = operatorName;
         this.routeName = routeName;
         this.startLocation = startLocation;
         this.endLocation = endLocation;
         this.fare = fare;
         this.departureTime = departureTime;
-        this.availableSeats = availableSeats; // Initialize available seats
+        this.availableSeats = capacity;  // Assuming all seats are available initially
     }
 
-    // Getters
+    // Getters and Setters for all fields
     public String getBusNumber() {
         return busNumber;
     }
@@ -70,7 +69,7 @@ public class Bus {
     }
 
     public void setAvailableSeats(int availableSeats) {
-        this.availableSeats = availableSeats; // Setter to modify available seats dynamically
+        this.availableSeats = availableSeats;
     }
 
     // Override toString() for easy logging and debugging
