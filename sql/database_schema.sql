@@ -112,3 +112,7 @@ INSERT INTO seats (bus_id, seat_number, seat_status) VALUES
 (@bus_id, '10E', IF(RAND() < 0.5, 'available', 'booked'));
 
 SET foreign_key_checks = 1;
+SELECT DISTINCT start_location, end_location FROM routes
+SELECT * FROM `routes`;
+SELECT end_location FROM routes;
+
