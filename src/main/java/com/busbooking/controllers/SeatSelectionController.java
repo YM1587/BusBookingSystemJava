@@ -107,8 +107,15 @@ public class SeatSelectionController {
             controller.setPassengerDetails(fromCity, toCity, departureDate, departureTime, fare, selectedSeat);
 
             Stage stage = (Stage) nextButton.getScene().getWindow();
+
+          // Set the size of the window
+            stage.setWidth(800); // Set the width to 800px
+            stage.setHeight(600); // Set the height to 600px
+
+           // Change the scene and show the stage
             stage.setScene(new Scene(root));
             stage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
