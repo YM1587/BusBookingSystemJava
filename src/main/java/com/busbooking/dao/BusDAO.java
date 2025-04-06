@@ -14,7 +14,7 @@ public class BusDAO {
         this.conn = DatabaseConnection.getConnection();
     }
 
-    // Get all available buses for the given route, now including departure time
+    // Get all available buses for the given route, now including departure time and available seats
     public List<Bus> getBusesByRoute(int routeId) {
         List<Bus> buses = new ArrayList<>();
         String sql = "SELECT b.bus_number, b.bus_type, b.capacity, b.operator_name, r.route_name, " +
@@ -31,8 +31,8 @@ public class BusDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                // Create Bus object, but don't store availableSeats in the Bus model
-                buses.add(new Bus(
+                // Create Bus object, including availableSeats from the database query
+                Bus bus = new Bus(
                         rs.getString("bus_number"),
                         rs.getString("bus_type"),
                         rs.getInt("capacity"),
@@ -41,8 +41,10 @@ public class BusDAO {
                         rs.getString("start_location"),
                         rs.getString("end_location"),
                         rs.getDouble("fare"),
-                        rs.getString("departure_time")
-                ));
+                        rs.getString("departure_time"),
+                        rs.getInt("available_seats") // Setting the available seats
+                );
+                buses.add(bus);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -50,7 +52,7 @@ public class BusDAO {
         return buses;
     }
 
-    // Get all buses, including other parameters and departure time
+    // Get all buses, including other parameters, departure time, and available seats
     public List<Bus> getAllBuses() {
         List<Bus> buses = new ArrayList<>();
         String sql = "SELECT b.bus_number, b.bus_type, b.capacity, b.operator_name, r.route_name, " +
@@ -65,8 +67,8 @@ public class BusDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                // Create Bus object, but don't store availableSeats in the Bus model
-                buses.add(new Bus(
+                // Create Bus object, including availableSeats from the database query
+                Bus bus = new Bus(
                         rs.getString("bus_number"),
                         rs.getString("bus_type"),
                         rs.getInt("capacity"),
@@ -75,8 +77,10 @@ public class BusDAO {
                         rs.getString("start_location"),
                         rs.getString("end_location"),
                         rs.getDouble("fare"),
-                        rs.getString("departure_time")
-                ));
+                        rs.getString("departure_time"),
+                        rs.getInt("available_seats") // Setting the available seats
+                );
+                buses.add(bus);
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -10,10 +10,11 @@ public class Bus {
     private String endLocation;
     private double fare;
     private String departureTime; // Field for departure time
+    private int availableSeats; // Field for available seats
 
     // Constructor
     public Bus(String busNumber, String busType, int capacity, String operatorName, String routeName,
-               String startLocation, String endLocation, double fare, String departureTime) {
+               String startLocation, String endLocation, double fare, String departureTime, int availableSeats) {
         this.busNumber = busNumber;
         this.busType = busType;
         this.capacity = capacity;
@@ -23,6 +24,7 @@ public class Bus {
         this.endLocation = endLocation;
         this.fare = fare;
         this.departureTime = departureTime;
+        this.availableSeats = availableSeats; // Initialize available seats
     }
 
     // Getters
@@ -62,6 +64,15 @@ public class Bus {
         return departureTime;
     }
 
+    // Getter and Setter for availableSeats
+    public int getAvailableSeats() {
+        return availableSeats;
+    }
+
+    public void setAvailableSeats(int availableSeats) {
+        this.availableSeats = availableSeats; // Setter to modify available seats dynamically
+    }
+
     // Override toString() for easy logging and debugging
     @Override
     public String toString() {
@@ -75,6 +86,7 @@ public class Bus {
                 ", endLocation='" + endLocation + '\'' +
                 ", fare=" + fare +
                 ", departureTime='" + departureTime + '\'' +
+                ", availableSeats=" + availableSeats +
                 '}';
     }
 }

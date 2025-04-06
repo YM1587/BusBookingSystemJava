@@ -76,8 +76,10 @@ public class BusSelectionController {
         card.setStyle("-fx-border-color: black; -fx-padding: 10; -fx-background-color: #f4f4f4;");
         card.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
+        // Update to display available seats from dynamic calculation
+        int availableSeats = bus.getAvailableSeats();  // Fetching from the dynamic result
         Label timeLabel = new Label("🕒 Departure Time: " + bus.getDepartureTime());  // This now works
-        Label seatsLabel = new Label("🪑 Available Seats: " + bus.getAvailableSeats());
+        Label seatsLabel = new Label("🪑 Available Seats: " + availableSeats); // Displaying available seats dynamically
         Label fareLabel = new Label("💰 Fare: $" + bus.getFare());
         Button selectButton = new Button("Select");
 
@@ -86,6 +88,7 @@ public class BusSelectionController {
         card.getChildren().addAll(timeLabel, seatsLabel, fareLabel, selectButton);
         return card;
     }
+
 
     private void navigateToSeatSelection(Bus bus) {
         try {
