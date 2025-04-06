@@ -45,25 +45,34 @@ public class BusSearchController {
 
         searchButton.setOnAction(event -> handleSearch());
     }
-
     private void loadRouteLocations() {
         ObservableList<String> startLocations = FXCollections.observableArrayList();
         ObservableList<String> endLocations = FXCollections.observableArrayList();
 
-        String query = "SELECT DISTINCT start_location, end_location FROM routes";
+        String query = "SELECT DISTINCT start_location, end_location FROM routes";  // Your original query
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
 
-            while (rs.next()) {
-                String start = rs.getString("start_location");
-                String end = rs.getString("end_location");
+            // Log results to verify
+            System.out.println("Fetching distinct start and end locations...");
 
-                if (!startLocations.contains(start)) startLocations.add(start);
-                if (!endLocations.contains(end)) endLocations.add(end);
+            while (rs.next()) {
+                String startLocation = rs.getString("start_location");
+                String endLocation = rs.getString("end_location");
+
+                System.out.println("Start: " + startLocation + " | End: " + endLocation);  // Debugging log
+
+                if (!startLocations.contains(startLocation)) startLocations.add(startLocation);
+                if (!endLocations.contains(endLocation)) endLocations.add(endLocation);
             }
 
+            // Check the list sizes
+            System.out.println("Start Locations: " + startLocations.size());
+            System.out.println("End Locations: " + endLocations.size());
+
+            // Set the ComboBoxes
             fromComboBox.setItems(startLocations);
             toComboBox.setItems(endLocations);
 
@@ -72,6 +81,8 @@ public class BusSearchController {
             e.printStackTrace();
         }
     }
+
+
 
     private void handleSearch() {
         String fromCity = fromComboBox.getValue();
@@ -100,7 +111,7 @@ public class BusSearchController {
     }
 
     private Route getRouteByCities(String start, String end) {
-        String query = "SELECT * FROM routes WHERE start_location = ? AND end_location = ?";
+        String query = "SELECT route_id, route_name, start_location, end_location, distance_km, estimated_duration, fare FROM routes WHERE start_location = ? AND end_location = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
