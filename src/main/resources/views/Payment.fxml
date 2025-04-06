@@ -41,7 +41,7 @@
         <!-- Error message -->
         <Label fx:id="lblError" text="" style="-fx-text-fill: red;" />
 
-        <Button text="Finish Payment" fx:id="btnFinishPayment" onAction="#handlePayment" />
+        <Button text="Finish Payment" fx:id="btnFinishPayment" />
     </VBox>
 
 </VBox>

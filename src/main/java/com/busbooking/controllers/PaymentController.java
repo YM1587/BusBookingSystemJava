@@ -26,7 +26,7 @@ public class PaymentController {
         lblTickets.setText(String.valueOf(ticketCount));
         lblAmount.setText(String.format("Ksh %.2f", totalAmount));
 
-        // Handle payment when the button is clicked
+        // Handle payment when the button is clicked (programmatically set action)
         btnFinishPayment.setOnAction(event -> handlePayment());
     }
 
