@@ -115,4 +115,7 @@ SET foreign_key_checks = 1;
 SELECT DISTINCT start_location, end_location FROM routes
 SELECT * FROM `routes`;
 SELECT end_location FROM routes;
+DESCRIBE routes;
+SELECT DISTINCT TRIM(start_location), TRIM(end_location) FROM routes WHERE start_location IS NOT NULL AND end_location IS NOT NULL;
+SELECT DISTINCT start_location, end_location FROM routes;
 
