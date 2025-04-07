@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import com.busbooking.models.Booking; // Assuming Booking is a model for the booking entity
-import services.BookingService; // A service class to fetch the booking history
+import com.busbooking.services.BookingService; // A service class to fetch the booking history
 
 public class BookingConfirmationController {
 
