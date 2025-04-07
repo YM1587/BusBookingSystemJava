@@ -46,9 +46,6 @@ public class PassengerService {
     // ✅ Register new passenger with hashed password
     public boolean registerPassenger(Passenger passenger) {
         try {
-            // Hash the password before saving
-            String hashedPassword = PasswordUtil.hashPassword(passenger.getPasswordHash());
-            passenger.setPasswordHash(hashedPassword);
 
             // Save passenger using DAO
             return passengerDAO.addPassenger(passenger);

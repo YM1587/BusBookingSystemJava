@@ -121,3 +121,4 @@ SELECT DISTINCT start_location, end_location FROM routes;
 SELECT COUNT(*) AS booked_seats
 FROM seats
 WHERE bus_id = ? AND seat_status = 'booked';
+

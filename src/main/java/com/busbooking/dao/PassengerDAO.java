@@ -2,7 +2,6 @@ package com.busbooking.dao;
 
 import com.busbooking.config.DatabaseConnection;
 import com.busbooking.models.Passenger;
-import com.busbooking.utils.PasswordUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ public class PassengerDAO {
             stmt.setString(2, passenger.getLastName());
             stmt.setString(3, passenger.getEmail());
             stmt.setString(4, passenger.getPhoneNumber());
-            stmt.setString(5, PasswordUtil.hashPassword(passenger.getPasswordHash())); // ✅ Hashing password properly
+            stmt.setString(5, passenger.getPasswordHash()); // Use already hashed password
             stmt.setString(6, passenger.getRole());
 
             int rowsInserted = stmt.executeUpdate();
@@ -74,28 +73,16 @@ public class PassengerDAO {
     }
 
     /**
-     * Authenticates a passenger by verifying their email and password.
-     */
-    public Passenger authenticatePassenger(String email, String password) {
-        Passenger passenger = getPassengerByEmail(email);
-
-        if (passenger != null && PasswordUtil.verifyPassword(password, passenger.getPasswordHash())) {
-            return passenger; // ✅ Correct authentication
-        }
-        return null; // ❌ Authentication failed
-    }
-
-    /**
      * Checks if an email is already registered.
      */
-    public boolean isEmailExists(String email) {
+    public boolean emailExists(String email) {
         String sql = "SELECT 1 FROM passengers WHERE email = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
-            return rs.next(); // ✅ If result exists, email is taken
+            return rs.next(); // If result exists, email is taken
         } catch (SQLException e) {
             System.out.println("Error checking email existence: " + e.getMessage());
         }
@@ -134,9 +121,9 @@ public class PassengerDAO {
             stmt.setString(3, passenger.getEmail());
             stmt.setString(4, passenger.getPhoneNumber());
 
-            // ✅ Only hash password if it's updated
+            
             if (passenger.getPasswordHash() != null && !passenger.getPasswordHash().isEmpty()) {
-                stmt.setString(5, PasswordUtil.hashPassword(passenger.getPasswordHash()));
+                stmt.setString(5, passenger.getPasswordHash()); // Use already hashed password
             } else {
                 stmt.setString(5, getPassengerById(passenger.getPassengerId()).getPasswordHash());
             }
