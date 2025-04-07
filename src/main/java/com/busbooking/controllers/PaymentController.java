@@ -10,7 +10,6 @@ import javafx.application.Platform;
 public class PaymentController {
 
     @FXML private Label lblFrom, lblTo, lblDate, lblTime, lblTickets, lblAmount, lblError;
-    @FXML private Label lblFirstName, lblLastName, lblIdNumber, lblMobile;  // Added labels for passenger details
     @FXML private TextField txtAmount, txtReference;
     @FXML private Button btnFinishPayment, btnDisplayReceipt;
 
@@ -19,12 +18,9 @@ public class PaymentController {
     public static int ticketCount;
     public static double totalAmount;
 
-    // Static variables to hold passenger details
-    public static String firstName, lastName, idNumber, mobile;
-
     @FXML
     public void initialize() {
-        // Debug: Check the booking and passenger details
+        // Debug: Check the booking details
         System.out.println("From: " + from);
         System.out.println("To: " + to);
         System.out.println("Date: " + date);
@@ -41,12 +37,6 @@ public class PaymentController {
             lblTime.setText(time);
             lblTickets.setText(String.valueOf(ticketCount));
             lblAmount.setText(String.format("Ksh %.2f", totalAmount));
-
-            // Populate passenger details
-            lblFirstName.setText(firstName);
-            lblLastName.setText(lastName);
-            lblIdNumber.setText(idNumber);
-            lblMobile.setText(mobile);
         });
 
         btnFinishPayment.setOnAction(event -> handlePayment());
@@ -109,12 +99,7 @@ public class PaymentController {
                 "Date: " + lblDate.getText() + "\n" +
                 "Departure Time: " + lblTime.getText() + "\n" +
                 "Tickets: " + lblTickets.getText() + "\n" +
-                "Total Amount: " + lblAmount.getText() + "\n" +
-                "Passenger Details:\n" +
-                "First Name: " + lblFirstName.getText() + "\n" +
-                "Last Name: " + lblLastName.getText() + "\n" +
-                "ID Number: " + lblIdNumber.getText() + "\n" +
-                "Mobile: " + lblMobile.getText();
+                "Total Amount: " + lblAmount.getText();
     }
 
     private void showReceipt(String receipt) {
