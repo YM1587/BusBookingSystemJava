@@ -43,7 +43,8 @@ public class SeatDAO {
         return null;
     }
 
-    public List<Seat> getAllSeats() {
+    public List<Seat> getSeats() {
+        // This method fetches all the seats from the database
         List<Seat> seats = new ArrayList<>();
         String sql = "SELECT * FROM seats";
         try (Connection conn = DatabaseConnection.getConnection();

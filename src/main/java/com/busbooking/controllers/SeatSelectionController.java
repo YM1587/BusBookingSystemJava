@@ -1,18 +1,14 @@
 package com.busbooking.controllers;
 
+import com.busbooking.dao.SeatDAO;
+import com.busbooking.models.Seat;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public class SeatSelectionController {
 
@@ -28,96 +24,75 @@ public class SeatSelectionController {
     @FXML
     private Button nextButton;
 
-    private String fromCity;
-    private String toCity;
-    private LocalDate departureDate;
-    private String departureTime;
-    private double fare;
     private String selectedSeat = null;
-    private final Set<String> bookedSeats = Set.of("1A", "2B", "3C"); // Sample booked seats
-    private final Set<Button> seatButtons = new HashSet<>();
+    private SeatDAO seatDAO;
 
+    public SeatSelectionController() {
+        seatDAO = new SeatDAO(); // Initialize DAO for seat availability
+    }
+
+    // Modified method to accept LocalDate and double
     public void setBusDetails(String from, String to, LocalDate date, String time, double fare) {
-        this.fromCity = from;
-        this.toCity = to;
-        this.departureDate = date;
-        this.departureTime = time;
-        this.fare = fare;
-
-        // Update route details UI
-        routeLabel.setText(from + " → " + to + " | " + date + " | " + time);
+        // Set route details in the UI
+        routeLabel.setText("From: " + from + " To: " + to + " | Date: " + date + " | Time: " + time + " | Fare: " + fare);
         generateSeatLayout();
     }
 
     private void generateSeatLayout() {
-        String[] rows = new String[10];
-        for (int i = 0; i < 9; i++) {
-            rows[i] = String.valueOf(i + 1); // Rows 1-9
-        }
-        rows[9] = "10"; // Row 10
+        List<Seat> seats = seatDAO.getSeats(); // Get all available seats from the database
 
-        String[] columns = {"A", "B", "C", "D", "E"}; // 5 columns in row 10
-
-        // Create seats
-        for (int rowIndex = 0; rowIndex < rows.length; rowIndex++) {
-            for (int colIndex = 0; colIndex < (rowIndex == 9 ? columns.length : 4); colIndex++) { // Row 10 has 5 columns, others have 4
-                String seatNumber = rows[rowIndex] + columns[colIndex];
+        // Loop to create seat buttons for each row
+        for (int row = 1; row <= 10; row++) {
+            for (int col = 1; col <= (row == 10 ? 5 : 4); col++) {
+                String seatNumber = row + String.valueOf((char) ('A' + col - 1)); // Create seat name e.g. 1A, 1B, etc.
                 Button seatButton = new Button(seatNumber);
-                seatButton.setStyle(bookedSeats.contains(seatNumber) ? "-fx-background-color: red;" : "-fx-background-color: green;");
 
-                // Disable booked seats
-                if (bookedSeats.contains(seatNumber)) {
-                    seatButton.setDisable(true);
+                // Find the seat status from the database
+                Seat seat = getSeatByNumber(seats, seatNumber);
+                if (seat != null && "Booked".equals(seat.getSeatStatus())) {
+                    seatButton.setStyle("-fx-background-color: lightgray; -fx-pref-width: 50px;");
+                    seatButton.setDisable(true); // Disable booked seats
                 } else {
-                    seatButton.setOnAction(event -> selectSeat(seatButton));
+                    seatButton.setStyle("-fx-background-color: white; -fx-pref-width: 50px;");
+                    seatButton.setOnAction(event -> selectSeat(seatButton)); // Set the button action
                 }
 
-                seatButtons.add(seatButton);
-                seatGrid.add(seatButton, colIndex, rowIndex);
+                seatGrid.add(seatButton, col - 1, row - 1); // Add seat button to the grid
             }
         }
     }
 
-    private void selectSeat(Button seatButton) {
-        if (selectedSeat != null) {
-            // Reset previous selection
-            seatButtons.stream()
-                    .filter(btn -> btn.getText().equals(selectedSeat))
-                    .findFirst()
-                    .ifPresent(btn -> btn.setStyle("-fx-background-color: green;"));
+    private Seat getSeatByNumber(List<Seat> seats, String seatNumber) {
+        for (Seat seat : seats) {
+            if (seat.getSeatNumber().equals(seatNumber)) {
+                return seat;
+            }
         }
-
-        // Mark new selection
-        selectedSeat = seatButton.getText();
-        seatButton.setStyle("-fx-background-color: yellow;");
-        selectedSeatLabel.setText("Selected Seat: " + selectedSeat);
-        nextButton.setDisable(false);
-
-        // Handle next button click
-        nextButton.setOnAction(event -> navigateToPassengerDetails());
+        return null;
     }
 
-    private void navigateToPassengerDetails() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/passenger_details.fxml"));
-            Parent root = loader.load();
-
-            // Pass data to PassengerDetailsController (to be implemented next)
-            PassengerDetailsController controller = loader.getController();
-            controller.setPassengerDetails(fromCity, toCity, departureDate, departureTime, fare, selectedSeat);
-
-            Stage stage = (Stage) nextButton.getScene().getWindow();
-
-          // Set the size of the window
-            stage.setWidth(800); // Set the width to 800px
-            stage.setHeight(600); // Set the height to 600px
-
-           // Change the scene and show the stage
-            stage.setScene(new Scene(root));
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+    @FXML
+    public void selectSeat(Button seatButton) {
+        // Reset previous selection
+        if (selectedSeat != null) {
+            Button previousSeatButton = (Button) seatGrid.lookup("#" + selectedSeat);
+            if (previousSeatButton != null) {
+                previousSeatButton.setStyle("-fx-background-color: white; -fx-pref-width: 50px;");
+            }
         }
+
+        // Mark the new selection
+        selectedSeat = seatButton.getText();
+        seatButton.setStyle("-fx-background-color: yellow; -fx-pref-width: 50px;");
+        selectedSeatLabel.setText("Selected Seat: " + selectedSeat);
+
+        // Enable the "Next" button
+        nextButton.setDisable(false);
+    }
+
+    @FXML
+    public void goToNextScreen() {
+        // Logic to go to the next screen after seat selection
+        System.out.println("Proceeding to the next screen...");
     }
 }
