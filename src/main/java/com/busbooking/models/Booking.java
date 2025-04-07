@@ -1,5 +1,7 @@
 package com.busbooking.models;
 
+import javafx.beans.property.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,11 +17,18 @@ public class Booking {
     private String routeName;
     private String boardingPoint;
     private BigDecimal totalFare;
-    private String bookingStatus; // Pending, Confirmed, Canceled
-    private String transactionReference; // Add this for payment reference
-    private String paymentStatus; // Add this for payment status (Paid, Unpaid, Failed)
+    private String bookingStatus;
+    private String transactionReference;
+    private String paymentStatus;
 
-    // Constructor
+    // JavaFX properties for UI binding
+    private final StringProperty routeProperty = new SimpleStringProperty();
+    private final ObjectProperty<LocalDate> dateProperty = new SimpleObjectProperty<>();
+    private final ObjectProperty<LocalTime> departureTimeProperty = new SimpleObjectProperty<>();
+    private final StringProperty seatProperty = new SimpleStringProperty();
+    private final ObjectProperty<BigDecimal> fareProperty = new SimpleObjectProperty<>();
+
+    // Full constructor
     public Booking(int bookingId, int passengerId, String pnrNumber, int busId, String seatNumber,
                    LocalDate travelDate, LocalTime departureTime, String routeName, String boardingPoint,
                    BigDecimal totalFare, String bookingStatus, String transactionReference, String paymentStatus) {
@@ -36,9 +45,25 @@ public class Booking {
         this.bookingStatus = bookingStatus;
         this.transactionReference = transactionReference;
         this.paymentStatus = paymentStatus;
+
+        // Initialize JavaFX properties
+        this.routeProperty.set(routeName);
+        this.dateProperty.set(travelDate);
+        this.departureTimeProperty.set(departureTime);
+        this.seatProperty.set(seatNumber);
+        this.fareProperty.set(totalFare);
     }
 
-    // Getters and Setters
+    // Optional mock constructor for testing/demo
+    public Booking(String route, String date, String time, String seat, double fare) {
+        this(0, 0, "TESTPNR", 0, seat,
+                LocalDate.parse(date),
+                LocalTime.parse(time.replace(" AM", "").replace(" PM", "")),
+                route, "", BigDecimal.valueOf(fare),
+                "Confirmed", "TXN123456", "Paid");
+    }
+
+    // Getters and setters
     public int getBookingId() { return bookingId; }
     public void setBookingId(int bookingId) { this.bookingId = bookingId; }
 
@@ -52,22 +77,37 @@ public class Booking {
     public void setBusId(int busId) { this.busId = busId; }
 
     public String getSeatNumber() { return seatNumber; }
-    public void setSeatNumber(String seatNumber) { this.seatNumber = seatNumber; }
+    public void setSeatNumber(String seatNumber) {
+        this.seatNumber = seatNumber;
+        this.seatProperty.set(seatNumber);
+    }
 
     public LocalDate getTravelDate() { return travelDate; }
-    public void setTravelDate(LocalDate travelDate) { this.travelDate = travelDate; }
+    public void setTravelDate(LocalDate travelDate) {
+        this.travelDate = travelDate;
+        this.dateProperty.set(travelDate);
+    }
 
     public LocalTime getDepartureTime() { return departureTime; }
-    public void setDepartureTime(LocalTime departureTime) { this.departureTime = departureTime; }
+    public void setDepartureTime(LocalTime departureTime) {
+        this.departureTime = departureTime;
+        this.departureTimeProperty.set(departureTime);
+    }
 
     public String getRouteName() { return routeName; }
-    public void setRouteName(String routeName) { this.routeName = routeName; }
+    public void setRouteName(String routeName) {
+        this.routeName = routeName;
+        this.routeProperty.set(routeName);
+    }
 
     public String getBoardingPoint() { return boardingPoint; }
     public void setBoardingPoint(String boardingPoint) { this.boardingPoint = boardingPoint; }
 
     public BigDecimal getTotalFare() { return totalFare; }
-    public void setTotalFare(BigDecimal totalFare) { this.totalFare = totalFare; }
+    public void setTotalFare(BigDecimal totalFare) {
+        this.totalFare = totalFare;
+        this.fareProperty.set(totalFare);
+    }
 
     public String getBookingStatus() { return bookingStatus; }
     public void setBookingStatus(String bookingStatus) { this.bookingStatus = bookingStatus; }
@@ -78,7 +118,27 @@ public class Booking {
     public String getPaymentStatus() { return paymentStatus; }
     public void setPaymentStatus(String paymentStatus) { this.paymentStatus = paymentStatus; }
 
-    // toString for receipt and booking history display
+    // JavaFX property getters
+    public StringProperty routeProperty() {
+        return routeProperty;
+    }
+
+    public ObjectProperty<LocalDate> dateProperty() {
+        return dateProperty;
+    }
+
+    public ObjectProperty<LocalTime> departureTimeProperty() {
+        return departureTimeProperty;
+    }
+
+    public StringProperty seatProperty() {
+        return seatProperty;
+    }
+
+    public ObjectProperty<BigDecimal> fareProperty() {
+        return fareProperty;
+    }
+
     @Override
     public String toString() {
         return String.format("Booking ID: %d\nPNR: %s\nRoute: %s\nTravel Date: %s\nDeparture Time: %s\nSeat: %s\nFare: Ksh %.2f\nStatus: %s\nTransaction Ref: %s\nPayment Status: %s",
