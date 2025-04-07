@@ -1,12 +1,13 @@
 package com.busbooking.controllers;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
-import com.busbooking.models.Booking; // Assuming Booking is a model for the booking entity
-import com.busbooking.services.BookingService; // A service class to fetch the booking history
+import com.busbooking.models.Booking;
+import com.busbooking.services.BookingService;
 
-public class BookingConfirmationController {
+public class BookingController {
 
     @FXML private TableView<Booking> bookingHistoryTable;
     @FXML private TableColumn<Booking, String> colRoute;
@@ -29,42 +30,36 @@ public class BookingConfirmationController {
     public void initialize() {
         bookingService = new BookingService();  // Initialize the service that fetches booking data
 
-        // Set up table columns
-        colRoute.setCellValueFactory(cellData -> cellData.getValue().routeProperty());
-        colDate.setCellValueFactory(cellData -> cellData.getValue().dateProperty());
-        colDepartureTime.setCellValueFactory(cellData -> cellData.getValue().departureTimeProperty());
-        colSeat.setCellValueFactory(cellData -> cellData.getValue().seatProperty());
-        colFare.setCellValueFactory(cellData -> cellData.getValue().fareProperty());
+        // ✅ Properly bind table columns using getters and conversions
+        colRoute.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRouteName()));
+        colDate.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTravelDate().toString()));
+        colDepartureTime.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDepartureTime().toString()));
+        colSeat.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSeatNumber()));
+        colFare.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getTotalFare().doubleValue()).asObject());
 
-        // Load booking history
         loadBookingHistory();
 
-        // Event listeners for buttons
         btnReturn.setOnAction(event -> handleReturnToDashboard());
         btnViewDetails.setOnAction(event -> handleViewBookingDetails());
     }
 
     private void loadBookingHistory() {
-        // Assuming BookingService has a method to fetch a list of bookings for the user
         var bookings = bookingService.getBookingHistoryForUser();
-
         bookingHistoryTable.getItems().setAll(bookings);
     }
 
     private void handleReturnToDashboard() {
-        // Navigate back to the dashboard screen (assuming we have this logic in place)
-        // Change scene or navigate back
+        // Implement scene switching logic here
     }
 
     private void handleViewBookingDetails() {
-        // Assuming we want to display details of the selected booking in the labels
         Booking selectedBooking = bookingHistoryTable.getSelectionModel().getSelectedItem();
         if (selectedBooking != null) {
-            lblBookingRoute.setText("Route: " + selectedBooking.getRoute());
-            lblBookingDate.setText("Date: " + selectedBooking.getDate());
-            lblBookingDepartureTime.setText("Departure Time: " + selectedBooking.getDepartureTime());
-            lblBookingSeat.setText("Seat: " + selectedBooking.getSeat());
-            lblBookingFare.setText("Fare: " + selectedBooking.getFare());
+            lblBookingRoute.setText("Route: " + selectedBooking.getRouteName());
+            lblBookingDate.setText("Date: " + selectedBooking.getTravelDate().toString());
+            lblBookingDepartureTime.setText("Departure Time: " + selectedBooking.getDepartureTime().toString());
+            lblBookingSeat.setText("Seat: " + selectedBooking.getSeatNumber());
+            lblBookingFare.setText("Fare: Ksh " + selectedBooking.getTotalFare().toString());
         }
     }
 }
