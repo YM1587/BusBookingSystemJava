@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Pos?>
+
+<GridPane fx:id="bookingConfirmationPane" xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.BookingConfirmationController" hgap="10" vgap="10">
+    <RowConstraints vgrow="NEVER"/>
+    <RowConstraints vgrow="ALWAYS"/>
+
+    <!-- Header: Booking Confirmation -->
+    <Label text="Booking Confirmation" style="-fx-font-size: 20px; -fx-font-weight: bold;" GridPane.columnSpan="2" GridPane.rowIndex="0" />
+
+    <!-- Booking History Table -->
+    <TableView fx:id="bookingHistoryTable" GridPane.rowIndex="1" GridPane.columnSpan="2" prefHeight="300" prefWidth="600">
+        <columns>
+            <TableColumn fx:id="colRoute" text="Route" prefWidth="150"/>
+            <TableColumn fx:id="colDate" text="Date" prefWidth="100"/>
+            <TableColumn fx:id="colDepartureTime" text="Departure Time" prefWidth="150"/>
+            <TableColumn fx:id="colSeat" text="Seat" prefWidth="100"/>
+            <TableColumn fx:id="colFare" text="Fare" prefWidth="100"/>
+        </columns>
+    </TableView>
+
+    <!-- Confirmed Booking Information -->
+    <VBox spacing="10" alignment="CENTER" GridPane.rowIndex="2" GridPane.columnSpan="2">
+        <Label text="Your Booking Details:" style="-fx-font-size: 16px;" />
+        <Label fx:id="lblBookingRoute" text="Route: Not Available" />
+        <Label fx:id="lblBookingDate" text="Date: Not Available" />
+        <Label fx:id="lblBookingDepartureTime" text="Departure Time: Not Available" />
+        <Label fx:id="lblBookingSeat" text="Seat: Not Available" />
+        <Label fx:id="lblBookingFare" text="Fare: Not Available" />
+    </VBox>
+
+    <!-- Navigation Buttons -->
+    <HBox spacing="15" alignment="CENTER" GridPane.rowIndex="3" GridPane.columnSpan="2">
+        <Button fx:id="btnReturn" text="Return to Dashboard" onAction="#handleReturnToDashboard"/>
+        <Button fx:id="btnViewDetails" text="View Details" onAction="#handleViewBookingDetails"/>
+    </HBox>
+</GridPane>
