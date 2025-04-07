@@ -23,7 +23,8 @@ public class BookingDAO {
      * @return true if booking is successful, false otherwise.
      */
     public boolean createBooking(Booking booking) {
-        String sql = "INSERT INTO bookings (passenger_id, pnr_number, bus_id, seat_number, travel_date, departure_time, route_name, boarding_point, total_fare, booking_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')";
+        String sql = "INSERT INTO bookings (passenger_id, pnr_number, bus_id, seat_number, travel_date, departure_time, route_name, boarding_point, total_fare, booking_status, transaction_reference, payment_status) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, booking.getPassengerId());
             stmt.setString(2, booking.getPnrNumber());
@@ -34,6 +35,8 @@ public class BookingDAO {
             stmt.setString(7, booking.getRouteName());
             stmt.setString(8, booking.getBoardingPoint());
             stmt.setBigDecimal(9, booking.getTotalFare());
+            stmt.setString(10, booking.getTransactionReference());
+            stmt.setString(11, booking.getPaymentStatus());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -66,13 +69,102 @@ public class BookingDAO {
                         rs.getString("route_name"),
                         rs.getString("boarding_point"),
                         rs.getBigDecimal("total_fare"),
-                        rs.getString("booking_status")
+                        rs.getString("booking_status"),
+                        rs.getString("transaction_reference"), // assuming your DB has this field
+                        rs.getString("payment_status") // assuming your DB has this field
                 ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return bookings;
+    }
+
+    /**
+     * Fetches booking history for a passenger with additional details like booking status.
+     *
+     * @param passengerId The ID of the passenger.
+     * @return List of Booking objects with detailed booking history.
+     */
+    public List<Booking> getBookingHistory(int passengerId) {
+        List<Booking> bookings = new ArrayList<>();
+        String sql = "SELECT * FROM bookings WHERE passenger_id = ? ORDER BY travel_date DESC";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, passengerId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                bookings.add(new Booking(
+                        rs.getInt("booking_id"),
+                        rs.getInt("passenger_id"),
+                        rs.getString("pnr_number"),
+                        rs.getInt("bus_id"),
+                        rs.getString("seat_number"),
+                        rs.getDate("travel_date").toLocalDate(),
+                        rs.getTime("departure_time").toLocalTime(),
+                        rs.getString("route_name"),
+                        rs.getString("boarding_point"),
+                        rs.getBigDecimal("total_fare"),
+                        rs.getString("booking_status"),
+                        rs.getString("transaction_reference"), // assuming your DB has this field
+                        rs.getString("payment_status") // assuming your DB has this field
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bookings;
+    }
+
+    /**
+     * Generates a formatted receipt for a booking.
+     *
+     * @param bookingId The ID of the booking.
+     * @return A string representing the formatted receipt.
+     */
+    public String generateReceipt(int bookingId) {
+        String sql = "SELECT * FROM bookings WHERE booking_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, bookingId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Booking booking = new Booking(
+                        rs.getInt("booking_id"),
+                        rs.getInt("passenger_id"),
+                        rs.getString("pnr_number"),
+                        rs.getInt("bus_id"),
+                        rs.getString("seat_number"),
+                        rs.getDate("travel_date").toLocalDate(),
+                        rs.getTime("departure_time").toLocalTime(),
+                        rs.getString("route_name"),
+                        rs.getString("boarding_point"),
+                        rs.getBigDecimal("total_fare"),
+                        rs.getString("booking_status"),
+                        rs.getString("transaction_reference"), // assuming your DB has this field
+                        rs.getString("payment_status") // assuming your DB has this field
+                );
+
+                // Create the receipt content
+                StringBuilder receipt = new StringBuilder();
+                receipt.append("Booking Receipt\n");
+                receipt.append("====================\n");
+                receipt.append("Booking ID: ").append(booking.getBookingId()).append("\n");
+                receipt.append("PNR Number: ").append(booking.getPnrNumber()).append("\n");
+                receipt.append("Seat: ").append(booking.getSeatNumber()).append("\n");
+                receipt.append("Route: ").append(booking.getRouteName()).append("\n");
+                receipt.append("Boarding Point: ").append(booking.getBoardingPoint()).append("\n");
+                receipt.append("Travel Date: ").append(booking.getTravelDate()).append("\n");
+                receipt.append("Departure Time: ").append(booking.getDepartureTime()).append("\n");
+                receipt.append("Total Fare: ").append(booking.getTotalFare()).append("\n");
+                receipt.append("Booking Status: ").append(booking.getBookingStatus()).append("\n");
+                receipt.append("Transaction Ref: ").append(booking.getTransactionReference()).append("\n");
+                receipt.append("Payment Status: ").append(booking.getPaymentStatus()).append("\n");
+                receipt.append("====================\n");
+                return receipt.toString();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "Booking not found!";
     }
 
     /**
