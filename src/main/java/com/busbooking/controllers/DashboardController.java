@@ -49,7 +49,7 @@ public class  DashboardController {
 
     @FXML
     private void handleBookingHistory() {
-        navigateTo("/views/profile.fxml", "Booking History");
+        navigateTo("/views/booking_confirmation.fxml", "Booking History");
     }
 
     @FXML
