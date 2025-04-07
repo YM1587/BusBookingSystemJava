@@ -19,6 +19,14 @@ public class PaymentController {
 
     @FXML
     public void initialize() {
+        // Debug: Check the booking details
+        System.out.println("From: " + from);
+        System.out.println("To: " + to);
+        System.out.println("Date: " + date);
+        System.out.println("Time: " + time);
+        System.out.println("Ticket Count: " + ticketCount);
+        System.out.println("Total Amount: " + totalAmount);
+
         // Automatically populate UI labels with booking details
         lblFrom.setText(from);
         lblTo.setText(to);
@@ -27,7 +35,7 @@ public class PaymentController {
         lblTickets.setText(String.valueOf(ticketCount));
         lblAmount.setText(String.format("Ksh %.2f", totalAmount));
 
-        // Handle payment when the button is clicked (programmatically set action)
+        // Handle payment when the button is clicked
         btnFinishPayment.setOnAction(event -> handlePayment());
 
         // Handle receipt display when the button is clicked

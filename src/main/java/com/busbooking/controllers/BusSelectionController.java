@@ -87,7 +87,7 @@ public class BusSelectionController {
         int availableSeats = bus.getAvailableSeats();  // Fetching from the Bus model
         Label timeLabel = new Label("🕒 Departure Time: " + bus.getDepartureTime());
         Label seatsLabel = new Label("🪑 Available Seats: " + availableSeats);
-        Label fareLabel = new Label("💰 Fare: $" + bus.getFare());
+        Label fareLabel = new Label("💰 Fare: KSH" + bus.getFare());
         Button selectButton = new Button("Select");
 
         // Button action to navigate to Seat Selection screen
