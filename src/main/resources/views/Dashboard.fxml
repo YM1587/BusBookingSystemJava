@@ -15,10 +15,7 @@
       spacing="20"
       alignment="CENTER">
 
-<!--    &lt;!&ndash;&lt;!&ndash; Apply Stylesheet &ndash;&gt;-->
-<!--    <stylesheets>-->
-<!--        <URL value="@../assets/styles.css"/>-->
-<!--    </stylesheets>&ndash;&gt;-->
+
 
     <!-- TOP HEADER -->
     <Label text="Bus Booking System" styleClass="title-label"/>

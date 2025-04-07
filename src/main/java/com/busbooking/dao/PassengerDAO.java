@@ -121,7 +121,7 @@ public class PassengerDAO {
             stmt.setString(3, passenger.getEmail());
             stmt.setString(4, passenger.getPhoneNumber());
 
-            
+
             if (passenger.getPasswordHash() != null && !passenger.getPasswordHash().isEmpty()) {
                 stmt.setString(5, passenger.getPasswordHash()); // Use already hashed password
             } else {
