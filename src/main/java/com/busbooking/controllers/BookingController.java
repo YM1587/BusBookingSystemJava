@@ -4,6 +4,11 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
+import java.io.IOException;
 import com.busbooking.models.Booking;
 import com.busbooking.services.BookingService;
 
@@ -28,9 +33,9 @@ public class BookingController {
     private BookingService bookingService;
 
     public void initialize() {
-        bookingService = new BookingService();  // Initialize the service that fetches booking data
+        bookingService = new BookingService();
 
-        // ✅ Properly bind table columns using getters and conversions
+        // Bind table columns
         colRoute.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRouteName()));
         colDate.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTravelDate().toString()));
         colDepartureTime.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDepartureTime().toString()));
@@ -48,11 +53,24 @@ public class BookingController {
         bookingHistoryTable.getItems().setAll(bookings);
     }
 
-    private void handleReturnToDashboard() {
-        // Implement scene switching logic here
+    @FXML
+    public void handleReturnToDashboard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/path/to/dashboard.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) btnReturn.getScene().getWindow();
+            Scene scene = new Scene(root, 600, 500); // Set the scene size to 600x500
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void handleViewBookingDetails() {
+
+    @FXML
+    public void handleViewBookingDetails() {
         Booking selectedBooking = bookingHistoryTable.getSelectionModel().getSelectedItem();
         if (selectedBooking != null) {
             lblBookingRoute.setText("Route: " + selectedBooking.getRouteName());
@@ -60,6 +78,12 @@ public class BookingController {
             lblBookingDepartureTime.setText("Departure Time: " + selectedBooking.getDepartureTime().toString());
             lblBookingSeat.setText("Seat: " + selectedBooking.getSeatNumber());
             lblBookingFare.setText("Fare: Ksh " + selectedBooking.getTotalFare().toString());
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Booking Selected");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select a booking to view the details.");
+            alert.showAndWait();
         }
     }
 }
