@@ -3,43 +3,17 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.*?>
-<?import javafx.scene.paint.Color?>
-<?import javafx.scene.shape.Rectangle?>
 
-<VBox spacing="15" alignment="CENTER" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.busbooking.controllers.SeatSelectionController">
+<VBox spacing="15" alignment="CENTER" xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.busbooking.controllers.SeatSelectionController">
 
     <!-- Route Details -->
-    <Label fx:id="routeLabel" text="Route Details" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+    <Label fx:id="routeLabel" text="Route Details"
+           style="-fx-font-size: 18px; -fx-font-weight: bold;" />
 
-    <!-- Seat Layout -->
-    <GridPane fx:id="seatGrid" hgap="10" vgap="10" alignment="CENTER">
-        <!-- Row 1 -->
-        <HBox spacing="5" alignment="CENTER">
-            <Button fx:id="seat_1A" text="1A" style="-fx-background-color: white; -fx-pref-width: 50px;" onAction="#selectSeat"/>
-            <Button fx:id="seat_1B" text="1B" style="-fx-background-color: white; -fx-pref-width: 50px;" onAction="#selectSeat"/>
-            <Rectangle width="20" height="30" fill="gray"/> <!-- Walking Space -->
-            <Button fx:id="seat_1C" text="1C" style="-fx-background-color: white; -fx-pref-width: 50px;" onAction="#selectSeat"/>
-            <Button fx:id="seat_1D" text="1D" style="-fx-background-color: navi_blue; -fx-pref-width: 50px;" onAction="#selectSeat"/>
-        </HBox>
-        <!-- Repeat for Rows 2-9 -->
-        <HBox spacing="5" alignment="CENTER">
-            <Button fx:id="seat_2A" text="2A" style="-fx-background-color: white; -fx-pref-width: 50px;" onAction="#selectSeat"/>
-            <Button fx:id="seat_2B" text="2B" style="-fx-background-color: white; -fx-pref-width: 50px;" onAction="#selectSeat"/>
-            <Rectangle width="20" height="30" fill="gray"/> <!-- Walking Space -->
-            <Button fx:id="seat_2C" text="2C" style="-fx-background-color: white; -fx-pref-width: 50px;" onAction="#selectSeat"/>
-            <Button fx:id="seat_2D" text="2D" style="-fx-background-color: white; -fx-pref-width: 50px;" onAction="#selectSeat"/>
-        </HBox>
-        <!-- Repeat for other rows up to Row 9 -->
-
-        <!-- Row 10 -->
-        <HBox spacing="5" alignment="CENTER">
-            <Button fx:id="seat_10A" text="10A" style="-fx-background-color: white; -fx-pref-width: 50px;" onAction="#selectSeat"/>
-            <Button fx:id="seat_10B" text="10B" style="-fx-background-color: white; -fx-pref-width: 50px;" onAction="#selectSeat"/>
-            <Button fx:id="seat_10C" text="10C" style="-fx-background-color: white; -fx-pref-width: 50px;" onAction="#selectSeat"/>
-            <Button fx:id="seat_10D" text="10D" style="-fx-background-color: white; -fx-pref-width: 50px;" onAction="#selectSeat"/>
-            <Button fx:id="seat_10E" text="10E" style="-fx-background-color: white; -fx-pref-width: 50px;" onAction="#selectSeat"/>
-        </HBox>
-    </GridPane>
+    <!-- Seat Layout Grid (Generated in Controller) -->
+    <GridPane fx:id="seatGrid" hgap="10" vgap="10" alignment="CENTER" />
 
     <!-- Selected Seat Display -->
     <Label fx:id="selectedSeatLabel" text="Selected Seat: None" />
