@@ -4,12 +4,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
 
 public class PaymentController {
 
     @FXML private Label lblFrom, lblTo, lblDate, lblTime, lblTickets, lblAmount, lblError;
     @FXML private TextField txtAmount, txtReference;
-    @FXML private Button btnFinishPayment;
+    @FXML private Button btnFinishPayment, btnDisplayReceipt;
 
     // Static variables to hold booking details
     public static String from, to, date, time;
@@ -28,6 +29,9 @@ public class PaymentController {
 
         // Handle payment when the button is clicked (programmatically set action)
         btnFinishPayment.setOnAction(event -> handlePayment());
+
+        // Handle receipt display when the button is clicked
+        btnDisplayReceipt.setOnAction(event -> handleDisplayReceipt());
     }
 
     private void handlePayment() {
@@ -69,5 +73,32 @@ public class PaymentController {
 
     private void generateReceipt() {
         System.out.println("Receipt generated: Downloadable now.");
+        // You can implement code to save or display the receipt in a specific format
+    }
+
+    private void handleDisplayReceipt() {
+        // Logic to display the receipt when the button is clicked
+        String receipt = generateReceiptText();  // Generate receipt text
+        showReceipt(receipt);  // Show receipt in a dialog
+    }
+
+    private String generateReceiptText() {
+        // Create the receipt text to be displayed
+        return "Receipt:\n" +
+                "From: " + lblFrom.getText() + "\n" +
+                "To: " + lblTo.getText() + "\n" +
+                "Date: " + lblDate.getText() + "\n" +
+                "Departure Time: " + lblTime.getText() + "\n" +
+                "Tickets: " + lblTickets.getText() + "\n" +
+                "Total Amount: " + lblAmount.getText();
+    }
+
+    private void showReceipt(String receipt) {
+        // Display the receipt in an Alert dialog
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Receipt");
+        alert.setHeaderText("Your Booking Receipt");
+        alert.setContentText(receipt);
+        alert.showAndWait();
     }
 }
