@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
+import javafx.application.Platform;
 
 public class PaymentController {
 
@@ -27,18 +28,18 @@ public class PaymentController {
         System.out.println("Ticket Count: " + ticketCount);
         System.out.println("Total Amount: " + totalAmount);
 
-        // Automatically populate UI labels with booking details
-        lblFrom.setText(from);
-        lblTo.setText(to);
-        lblDate.setText(date);
-        lblTime.setText(time);
-        lblTickets.setText(String.valueOf(ticketCount));
-        lblAmount.setText(String.format("Ksh %.2f", totalAmount));
+        // Ensure UI updates are done on the JavaFX Application Thread
+        Platform.runLater(() -> {
+            // Automatically populate UI labels with booking details
+            lblFrom.setText(from);
+            lblTo.setText(to);
+            lblDate.setText(date);
+            lblTime.setText(time);
+            lblTickets.setText(String.valueOf(ticketCount));
+            lblAmount.setText(String.format("Ksh %.2f", totalAmount));
+        });
 
-        // Handle payment when the button is clicked
         btnFinishPayment.setOnAction(event -> handlePayment());
-
-        // Handle receipt display when the button is clicked
         btnDisplayReceipt.setOnAction(event -> handleDisplayReceipt());
     }
 

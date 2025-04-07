@@ -3,8 +3,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.*?>
+<?import javafx.application.Platform?>
 
-<VBox spacing="15" alignment="CENTER" xmlns="http://javafx.com/javafx"
+<VBox minHeight="400" spacing="15" alignment="CENTER" xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml" fx:controller="com.busbooking.controllers.PaymentController">
 
     <!-- Booking Summary Section -->
