@@ -16,11 +16,13 @@ public class Booking {
     private String boardingPoint;
     private BigDecimal totalFare;
     private String bookingStatus; // Pending, Confirmed, Canceled
+    private String transactionReference; // Add this for payment reference
+    private String paymentStatus; // Add this for payment status (Paid, Unpaid, Failed)
 
     // Constructor
     public Booking(int bookingId, int passengerId, String pnrNumber, int busId, String seatNumber,
                    LocalDate travelDate, LocalTime departureTime, String routeName, String boardingPoint,
-                   BigDecimal totalFare, String bookingStatus) {
+                   BigDecimal totalFare, String bookingStatus, String transactionReference, String paymentStatus) {
         this.bookingId = bookingId;
         this.passengerId = passengerId;
         this.pnrNumber = pnrNumber;
@@ -32,6 +34,8 @@ public class Booking {
         this.boardingPoint = boardingPoint;
         this.totalFare = totalFare;
         this.bookingStatus = bookingStatus;
+        this.transactionReference = transactionReference;
+        this.paymentStatus = paymentStatus;
     }
 
     // Getters and Setters
@@ -67,4 +71,17 @@ public class Booking {
 
     public String getBookingStatus() { return bookingStatus; }
     public void setBookingStatus(String bookingStatus) { this.bookingStatus = bookingStatus; }
+
+    public String getTransactionReference() { return transactionReference; }
+    public void setTransactionReference(String transactionReference) { this.transactionReference = transactionReference; }
+
+    public String getPaymentStatus() { return paymentStatus; }
+    public void setPaymentStatus(String paymentStatus) { this.paymentStatus = paymentStatus; }
+
+    // toString for receipt and booking history display
+    @Override
+    public String toString() {
+        return String.format("Booking ID: %d\nPNR: %s\nRoute: %s\nTravel Date: %s\nDeparture Time: %s\nSeat: %s\nFare: Ksh %.2f\nStatus: %s\nTransaction Ref: %s\nPayment Status: %s",
+                bookingId, pnrNumber, routeName, travelDate, departureTime, seatNumber, totalFare, bookingStatus, transactionReference, paymentStatus);
+    }
 }
