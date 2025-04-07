@@ -5,7 +5,7 @@
 <?import javafx.geometry.*?>
 <?import javafx.application.Platform?>
 
-<VBox minHeight="400" spacing="15" alignment="CENTER" xmlns="http://javafx.com/javafx"
+<VBox minHeight="500" spacing="15" alignment="CENTER" xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml" fx:controller="com.busbooking.controllers.PaymentController">
 
     <!-- Booking Summary Section -->
@@ -28,6 +28,20 @@
 
         <Label text="Total Amount:" />
         <Label fx:id="lblAmount" text="-" />
+
+        <!-- Passenger Details Section -->
+        <Label text="Passenger Details" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+        <Label text="First Name:" />
+        <Label fx:id="lblFirstName" text="-" />
+
+        <Label text="Last Name:" />
+        <Label fx:id="lblLastName" text="-" />
+
+        <Label text="ID Number:" />
+        <Label fx:id="lblIdNumber" text="-" />
+
+        <Label text="Mobile Number:" />
+        <Label fx:id="lblMobile" text="-" />
     </GridPane>
 
     <!-- Payment Form -->
