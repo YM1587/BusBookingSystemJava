@@ -59,10 +59,10 @@ public class SeatSelectionController {
 
                 Seat seat = getSeatByNumber(seats, seatNumber);
                 if (seat != null && "Booked".equals(seat.getSeatStatus())) {
-                    seatButton.setStyle("-fx-background-color: blue;");
+                    seatButton.setStyle("-fx-background-color: lightgray;");
                     seatButton.setDisable(true);
                 } else {
-                    seatButton.setStyle("-fx-background-color: cream;");
+                    seatButton.setStyle("-fx-background-color: white;");
                     seatButton.setOnAction(event -> selectSeat(seatButton));
                 }
 
