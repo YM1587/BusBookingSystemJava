@@ -1,113 +1,76 @@
 package com.busbooking.controllers;
 
+import com.busbooking.dao.BookingDAO;
+import com.busbooking.dao.SeatDAO;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Alert;
-import javafx.application.Platform;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import com.busbooking.models.Booking;
+import com.busbooking.models.Passenger;
+import com.busbooking.utils.ReceiptPrinter;
+
+import java.time.LocalDate;
 
 public class PaymentController {
 
-    @FXML private Label lblFrom, lblTo, lblDate, lblTime, lblTickets, lblAmount, lblError;
-    @FXML private TextField txtAmount, txtReference;
-    @FXML private Button btnFinishPayment, btnDisplayReceipt;
+    @FXML private Label fareLabel;
+    @FXML private GridPane bookingSummaryGrid;
+    @FXML private TextField transactionRefField;
+    @FXML private Button printReceiptButton;
 
-    // Static variables to hold booking details
-    public static String from, to, date, time;
-    public static int ticketCount;
-    public static double totalAmount;
+    private Booking currentBooking;
+    private BookingDAO bookingDAO = new BookingDAO();
+    private SeatDAO seatDAO = new SeatDAO();
+
+    public void initializeBookingDetails(Booking booking) {
+        this.currentBooking = booking;
+
+        // Populate summary grid (e.g. Passenger Name, Seat No., Date)
+        bookingSummaryGrid.addRow(0, new Label("Passenger Name:"), new Label(booking.getPassengerName()));
+        bookingSummaryGrid.addRow(1, new Label("From:"), new Label(booking.getFrom()));
+        bookingSummaryGrid.addRow(2, new Label("To:"), new Label(booking.getTo()));
+        bookingSummaryGrid.addRow(3, new Label("Departure Time:"), new Label(booking.getDepartureTime()));
+        bookingSummaryGrid.addRow(4, new Label("Seat Number:"), new Label(booking.getSeatNumber()));
+        bookingSummaryGrid.addRow(5, new Label("Date:"), new Label(String.valueOf(booking.getBookingDate())));
+
+        // Set fare
+        fareLabel.setText("KES " + booking.getFare());
+    }
 
     @FXML
-    public void initialize() {
-        // Debug: Check the booking details
-        System.out.println("From: " + from);
-        System.out.println("To: " + to);
-        System.out.println("Date: " + date);
-        System.out.println("Time: " + time);
-        System.out.println("Ticket Count: " + ticketCount);
-        System.out.println("Total Amount: " + totalAmount);
+    public void handleConfirmBooking(ActionEvent event) {
+        String transactionRef = transactionRefField.getText().trim();
 
-        // Ensure UI updates are done on the JavaFX Application Thread
-        Platform.runLater(() -> {
-            // Automatically populate UI labels with booking details
-            lblFrom.setText(from);
-            lblTo.setText(to);
-            lblDate.setText(date);
-            lblTime.setText(time);
-            lblTickets.setText(String.valueOf(ticketCount));
-            lblAmount.setText(String.format("Ksh %.2f", totalAmount));
-        });
-
-        btnFinishPayment.setOnAction(event -> handlePayment());
-        btnDisplayReceipt.setOnAction(event -> handleDisplayReceipt());
-    }
-
-    private void handlePayment() {
-        String amountEntered = txtAmount.getText().trim();
-        String transactionRef = txtReference.getText().trim();
-
-        // Validation: Check if reference number is empty
         if (transactionRef.isEmpty()) {
-            lblError.setText("Transaction reference cannot be empty!");
+            showAlert("Missing Info", "Please enter the M-PESA transaction reference.");
             return;
         }
 
-        // Optional: Validate the amount entered (should match expected amount)
-        double enteredAmount;
-        try {
-            enteredAmount = Double.parseDouble(amountEntered);
-            if (enteredAmount < totalAmount) {
-                lblError.setText("Insufficient payment! Please enter the full amount.");
-                return;
-            }
-        } catch (NumberFormatException e) {
-            lblError.setText("Invalid amount entered!");
-            return;
-        }
+        // 1. Mark seat as booked
+        seatDAO.updateSeatStatus(currentBooking.getSeatId(), "Booked");
 
-        // If payment is valid, mark seat as booked
-        markSeatAsBooked();
+        // 2. Save booking to DB
+        currentBooking.setPaymentStatus("Completed");
+        currentBooking.setTransactionRef(transactionRef);
+        bookingDAO.createBooking(currentBooking);
 
-        // Set payment status to Completed
-        lblError.setText("Payment successful! Generating receipt...");
+        // 3. Enable receipt
+        printReceiptButton.setDisable(false);
 
-        // Simulate receipt generation
-        generateReceipt();
+        showAlert("Success", "Booking confirmed! You can now print your receipt.");
     }
 
-    private void markSeatAsBooked() {
-        System.out.println("Seat successfully booked for: " + from + " to " + to);
+    @FXML
+    public void handlePrintReceipt(ActionEvent event) {
+        ReceiptPrinter.print(currentBooking);
     }
 
-    private void generateReceipt() {
-        System.out.println("Receipt generated: Downloadable now.");
-        // You can implement code to save or display the receipt in a specific format
-    }
-
-    private void handleDisplayReceipt() {
-        // Logic to display the receipt when the button is clicked
-        String receipt = generateReceiptText();  // Generate receipt text
-        showReceipt(receipt);  // Show receipt in a dialog
-    }
-
-    private String generateReceiptText() {
-        // Create the receipt text to be displayed
-        return "Receipt:\n" +
-                "From: " + lblFrom.getText() + "\n" +
-                "To: " + lblTo.getText() + "\n" +
-                "Date: " + lblDate.getText() + "\n" +
-                "Departure Time: " + lblTime.getText() + "\n" +
-                "Tickets: " + lblTickets.getText() + "\n" +
-                "Total Amount: " + lblAmount.getText();
-    }
-
-    private void showReceipt(String receipt) {
-        // Display the receipt in an Alert dialog
+    private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Receipt");
-        alert.setHeaderText("Your Booking Receipt");
-        alert.setContentText(receipt);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
         alert.showAndWait();
     }
 }
