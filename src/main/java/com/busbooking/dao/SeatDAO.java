@@ -65,17 +65,25 @@ public class SeatDAO {
         return seats;
     }
 
-    public void updateSeatStatus(int seatId, String newStatus) {
-        String sql = "UPDATE seats SET seat_status = ? WHERE seat_id = ?";
+    public void updateSeatStatus(String seatNumber, int busId, String newStatus) {
+        // Modify the SQL to also check for busId along with seatNumber
+        String sql = "UPDATE seats SET seat_status = ? WHERE seat_number = ? AND bus_id = ?";
+
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, newStatus);
-            stmt.setInt(2, seatId);
+
+            stmt.setString(1, newStatus);  // Set the new seat status
+            stmt.setString(2, seatNumber); // Set the seat number
+            stmt.setInt(3, busId);         // Set the bus ID
+
             stmt.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+
 
     public void deleteSeat(int id) {
         String sql = "DELETE FROM seats WHERE seat_id = ?";

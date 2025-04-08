@@ -7,10 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import com.busbooking.models.Booking;
-import com.busbooking.models.Passenger;
 import com.busbooking.utils.ReceiptPrinter;
-
-import java.time.LocalDate;
 
 public class PaymentController {
 
@@ -20,22 +17,32 @@ public class PaymentController {
     @FXML private Button printReceiptButton;
 
     private Booking currentBooking;
-    private BookingDAO bookingDAO = new BookingDAO();
-    private SeatDAO seatDAO = new SeatDAO();
+    private final BookingDAO bookingDAO = new BookingDAO();
+    private final SeatDAO seatDAO = new SeatDAO();
 
     public void initializeBookingDetails(Booking booking) {
         this.currentBooking = booking;
 
-        // Populate summary grid (e.g. Passenger Name, Seat No., Date)
-        bookingSummaryGrid.addRow(0, new Label("Passenger Name:"), new Label(booking.getPassengerName()));
-        bookingSummaryGrid.addRow(1, new Label("From:"), new Label(booking.getFrom()));
-        bookingSummaryGrid.addRow(2, new Label("To:"), new Label(booking.getTo()));
-        bookingSummaryGrid.addRow(3, new Label("Departure Time:"), new Label(booking.getDepartureTime()));
-        bookingSummaryGrid.addRow(4, new Label("Seat Number:"), new Label(booking.getSeatNumber()));
-        bookingSummaryGrid.addRow(5, new Label("Date:"), new Label(String.valueOf(booking.getBookingDate())));
+        // Split routeName into From and To if needed (e.g. "Mombasa to Nairobi")
+        String routeName = booking.getRouteName();
+        String from = "N/A";
+        String to = "N/A";
+        if (routeName != null && routeName.contains(" to ")) {
+            String[] parts = routeName.split(" to ");
+            from = parts[0];
+            to = parts[1];
+        }
 
-        // Set fare
-        fareLabel.setText("KES " + booking.getFare());
+        // Fill in booking summary
+        bookingSummaryGrid.addRow(0, new Label("PNR Number:"), new Label(booking.getPnrNumber()));
+        bookingSummaryGrid.addRow(1, new Label("From:"), new Label(from));
+        bookingSummaryGrid.addRow(2, new Label("To:"), new Label(to));
+        bookingSummaryGrid.addRow(3, new Label("Departure Time:"), new Label(booking.getDepartureTime().toString()));
+        bookingSummaryGrid.addRow(4, new Label("Seat Number:"), new Label(booking.getSeatNumber()));
+        bookingSummaryGrid.addRow(5, new Label("Travel Date:"), new Label(booking.getTravelDate().toString()));
+
+        // Display fare
+        fareLabel.setText("KES " + booking.getTotalFare());
     }
 
     @FXML
@@ -47,15 +54,16 @@ public class PaymentController {
             return;
         }
 
-        // 1. Mark seat as booked
-        seatDAO.updateSeatStatus(currentBooking.getSeatId(), "Booked");
+        // Mark seat as booked (assuming you pass seat info via seatNumber, not seat ID directly)
+        seatDAO.updateSeatStatus(currentBooking.getSeatNumber(), currentBooking.getBusId(), "Booked");
 
-        // 2. Save booking to DB
-        currentBooking.setPaymentStatus("Completed");
-        currentBooking.setTransactionRef(transactionRef);
+        // Update booking status and save
+        currentBooking.setPaymentStatus("Paid");
+        currentBooking.setBookingStatus("Confirmed");
+        currentBooking.setTransactionReference(transactionRef);
         bookingDAO.createBooking(currentBooking);
 
-        // 3. Enable receipt
+        // Enable receipt printing
         printReceiptButton.setDisable(false);
 
         showAlert("Success", "Booking confirmed! You can now print your receipt.");
