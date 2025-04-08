@@ -123,11 +123,11 @@ public class SeatSelectionController {
         nextButton.setDisable(false);
     }
 
-    @FXML
-    public void goToNextScreen() {
-        System.out.println("Proceeding to the next screen with seat: " + selectedSeat);
-        // Add navigation logic here
-    }
+//    @FXML
+//    public void goToNextScreen() {
+//        System.out.println("Proceeding to the next screen with seat: " + selectedSeat);
+//        // Add navigation logic here
+//    }
 
     // ✅ New method: navigates to passenger_details.fxml
     @FXML

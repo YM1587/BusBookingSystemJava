@@ -6,11 +6,22 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.busbooking.controllers.PassengerDetailsController" spacing="20" padding="20">
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.busbooking.controllers.PassengerDetailsController"
+      spacing="20">
 
-    <Label text="Passenger Details Confirmation" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Passenger Details Confirmation"
+           style="-fx-font-size: 18px; -fx-font-weight: bold;" />
 
     <GridPane hgap="10" vgap="10">
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+
         <Label text="Full Name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <Label fx:id="nameLabel" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
@@ -39,6 +50,7 @@
         <Label fx:id="fareLabel" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
     </GridPane>
 
-    <Button fx:id="proceedButton" text="Proceed to Pay" onAction="#handleProceedToPayment" style="-fx-font-size: 14px; -fx-background-color: #4CAF50; -fx-text-fill: white;" />
-
+    <Button fx:id="proceedButton" text="Proceed to Pay"
+            onAction="#handleProceedToPayment"
+            style="-fx-font-size: 14px; -fx-background-color: #4CAF50; -fx-text-fill: white;" />
 </VBox>

@@ -19,5 +19,5 @@
     <Label fx:id="selectedSeatLabel" text="Selected Seat: None" />
 
     <!-- Next Button -->
-    <Button fx:id="nextButton" text="Next" disable="true" onAction="#goToNextScreen"/>
+    <Button fx:id="nextButton" text="Next" disable="true" onAction="#navigateToPassengerDetails"/>
 </VBox>
