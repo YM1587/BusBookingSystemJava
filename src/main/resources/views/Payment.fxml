@@ -4,11 +4,16 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="20.0" padding="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.PaymentController">
+<VBox spacing="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.busbooking.controllers.PaymentController">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
 
     <Label text="🧾 Booking Summary" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
 
-    <GridPane fx:id="bookingSummaryGrid" hgap="10" vgap="10">
+    <GridPane fx:id="bookingSummaryGrid" hgap="20" vgap="10">
         <columnConstraints>
             <ColumnConstraints halignment="RIGHT"/>
             <ColumnConstraints />
@@ -35,5 +40,4 @@
         <Button fx:id="confirmBookingButton" text="✅ Confirm Booking" onAction="#handleConfirmBooking"/>
         <Button fx:id="printReceiptButton" text="🖨️ Print Receipt" onAction="#handlePrintReceipt" disable="true"/>
     </HBox>
-
 </VBox>
