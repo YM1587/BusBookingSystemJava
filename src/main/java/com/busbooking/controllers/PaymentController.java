@@ -2,12 +2,15 @@ package com.busbooking.controllers;
 
 import com.busbooking.dao.BookingDAO;
 import com.busbooking.dao.SeatDAO;
+import com.busbooking.models.Passenger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import com.busbooking.models.Booking;
 import com.busbooking.utils.ReceiptPrinter;
+
+import java.time.LocalDate;
 
 public class PaymentController {
 
@@ -44,6 +47,20 @@ public class PaymentController {
         // Display fare
         fareLabel.setText("KES " + booking.getTotalFare());
     }
+    public void setPaymentDetails(Passenger passenger, String selectedSeat, String from, String to,
+                                  LocalDate date, String time, double fare, int busId) {
+        // You can use the parameters to set values to labels or store for processing payment
+        System.out.println("Payment details received:");
+        System.out.println("Passenger: " + passenger.getFirstName());
+        System.out.println("Seat: " + selectedSeat);
+        System.out.println("From: " + from);
+        System.out.println("To: " + to);
+        System.out.println("Date: " + date);
+        System.out.println("Time: " + time);
+        System.out.println("Fare: " + fare);
+        System.out.println("Bus ID: " + busId);
+    }
+
 
     @FXML
     public void handleConfirmBooking(ActionEvent event) {

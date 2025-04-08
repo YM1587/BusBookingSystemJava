@@ -3,9 +3,14 @@ package com.busbooking.controllers;
 import com.busbooking.models.Passenger;
 import com.busbooking.utils.SessionManager;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.time.LocalDate;
 
 public class PassengerDetailsController {
@@ -61,9 +66,37 @@ public class PassengerDetailsController {
         fareLabel.setText(String.format("%.2f", fare));
     }
 
+
     @FXML
     public void handleProceedToPayment() {
-        // TODO: Navigate to payment screen, pass necessary info
-        System.out.println("Proceeding to payment...");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/payment.fxml"));
+            Parent root = loader.load();
+
+            // Pass data to PaymentController
+            PaymentController paymentController = loader.getController();
+            paymentController.setPaymentDetails(
+                    currentPassenger,
+                    selectedSeat,
+                    from,
+                    to,
+                    date,
+                    time,
+                    fare,
+                    busId
+            );
+
+            // Set the new scene
+            Stage stage = (Stage) proceedButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Payment");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Failed to load payment.fxml");
+        }
     }
+
+
 }
