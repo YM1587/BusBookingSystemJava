@@ -108,7 +108,9 @@ public class BusSelectionController {
 
             // Pass data to SeatSelectionController
             SeatSelectionController controller = loader.getController();
-            controller.setBusDetails(fromCity, toCity, departureDate, bus.getDepartureTime(), bus.getFare());
+
+            // Ensure you're using the correct getter method for busId
+            controller.setBusDetails(fromCity, toCity, departureDate, bus.getDepartureTime(), bus.getFare(), bus.getBusId()); // Corrected here
 
             // Set the scene with desired size
             Scene scene = new Scene(root, 1000, 700);
@@ -120,6 +122,7 @@ public class BusSelectionController {
             showErrorAlert("Navigation Error", "Failed to load seat selection screen.");
         }
     }
+
 
     // Show an error alert
     private void showErrorAlert(String title, String message) {

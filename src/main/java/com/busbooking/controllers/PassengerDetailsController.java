@@ -1,6 +1,5 @@
 package com.busbooking.controllers;
 
-import com.busbooking.dao.PassengerDAO;
 import com.busbooking.models.Passenger;
 import com.busbooking.utils.SessionManager;
 import javafx.fxml.FXML;
@@ -33,15 +32,15 @@ public class PassengerDetailsController {
     private Passenger currentPassenger;
 
     public void initialize() {
-        // Fetch logged-in passenger by email (you can replace this with your actual session management)
-        String loggedInEmail = SessionManager.getLoggedInEmail(); // Assumed helper
-        PassengerDAO passengerDAO = new PassengerDAO();
-        currentPassenger = passengerDAO.getPassengerByEmail(loggedInEmail);
+        // Fetch logged-in passenger from session
+        currentPassenger = SessionManager.getLoggedInUser();
 
         if (currentPassenger != null) {
             nameLabel.setText(currentPassenger.getFirstName() + " " + currentPassenger.getLastName());
-            idLabel.setText(currentPassenger.getIdNumber());
-            phoneLabel.setText(currentPassenger.getMobileNumber());
+            idLabel.setText(String.valueOf(currentPassenger.getPassengerId())); // Replaced getIdNumber()
+            phoneLabel.setText(currentPassenger.getPhoneNumber()); // Replaced getMobileNumber()
+        } else {
+            System.out.println("No logged-in passenger found.");
         }
     }
 
