@@ -9,21 +9,18 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import com.busbooking.models.Passenger;
 import com.busbooking.utils.SessionManager;
-import java.io.File;
 
-public class  DashboardController {
+public class DashboardController {
     @FXML private Label usernameLabel;
     @FXML private ImageView profilePicture;
-    @FXML private Button searchBusBtn, bookingHistoryBtn, logoutBtn;
+    @FXML private Button searchBusBtn, logoutBtn;
 
     public void initialize() {
-        // Check if user is logged in
         if (!SessionManager.isLoggedIn()) {
             navigateTo("/views/login.fxml", "Login");
             return;
         }
 
-        // Load user details
         loadUserData();
     }
 
@@ -35,21 +32,9 @@ public class  DashboardController {
         }
     }
 
-//    private void loadProfilePicture(String path) {
-//        if (path == null || path.isEmpty()) {
-//            path = "/assets/default_avatar.png"; // Ensure a default avatar is used
-//        }
-//        profilePicture.setImage(new Image(getClass().getResourceAsStream(path)));
-//    }
-
     @FXML
     private void handleSearchBus() {
         navigateTo("/views/bus_search.fxml", "Bus Search");
-    }
-
-    @FXML
-    private void handleBookingHistory() {
-        navigateTo("/views/booking_confirmation.fxml", "Booking History");
     }
 
     @FXML
@@ -62,7 +47,7 @@ public class  DashboardController {
         try {
             Stage stage = (Stage) searchBusBtn.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Scene scene = new Scene(loader.load(),600,500);
+            Scene scene = new Scene(loader.load(), 600, 500);
             stage.setScene(scene);
             stage.setTitle(title);
         } catch (Exception e) {

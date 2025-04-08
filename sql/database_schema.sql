@@ -121,4 +121,7 @@ SELECT DISTINCT start_location, end_location FROM routes;
 SELECT COUNT(*) AS booked_seats
 FROM seats
 WHERE bus_id = ? AND seat_status = 'booked';
+ALTER TABLE bookings
+ADD COLUMN transaction_reference VARCHAR(255),
+ADD COLUMN payment_status VARCHAR(50);
 
