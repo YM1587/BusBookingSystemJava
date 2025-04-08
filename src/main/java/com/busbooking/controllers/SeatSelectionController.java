@@ -3,11 +3,15 @@ package com.busbooking.controllers;
 import com.busbooking.dao.SeatDAO;
 import com.busbooking.models.Seat;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
+import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,11 +33,26 @@ public class SeatSelectionController {
     private String selectedSeat = null;
     private SeatDAO seatDAO;
 
+    // New fields to carry booking information
+    private String from;
+    private String to;
+    private LocalDate date;
+    private String time;
+    private double fare;
+    private int busId;
+
     public SeatSelectionController() {
         seatDAO = new SeatDAO(); // Initialize DAO for seat availability
     }
 
-    public void setBusDetails(String from, String to, LocalDate date, String time, double fare) {
+    public void setBusDetails(String from, String to, LocalDate date, String time, double fare, int busId) {
+        this.from = from;
+        this.to = to;
+        this.date = date;
+        this.time = time;
+        this.fare = fare;
+        this.busId = busId;
+
         routeLabel.setText("From: " + from + " To: " + to + " | Date: " + date + " | Time: " + time + " | Fare: " + fare);
         generateSeatLayout();
     }
@@ -108,5 +127,24 @@ public class SeatSelectionController {
     public void goToNextScreen() {
         System.out.println("Proceeding to the next screen with seat: " + selectedSeat);
         // Add navigation logic here
+    }
+
+    // ✅ New method: navigates to passenger_details.fxml
+    @FXML
+    public void navigateToPassengerDetails() {
+        if (selectedSeat == null) return;
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/passenger_details.fxml"));
+            Parent root = loader.load();
+
+            PassengerDetailsController controller = loader.getController();
+            controller.setBookingDetails(selectedSeat, from, to, date, time, fare, busId);
+
+            Stage stage = (Stage) seatGrid.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
