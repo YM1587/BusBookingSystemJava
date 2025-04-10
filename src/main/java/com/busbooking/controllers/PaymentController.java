@@ -112,7 +112,7 @@ public class PaymentController {
         }
 
         // Update seat status in DB
-        seatDAO.updateSeatStatus(currentBooking.getSeatNumber(), currentBooking.getBusId(), "Booked");
+//        seatDAO.updateSeatStatus(currentBooking.getSeatNumber(), currentBooking.getBusId(), "Booked");
 
         // Update booking status and payment
         currentBooking.setTransactionReference(transactionRef);
