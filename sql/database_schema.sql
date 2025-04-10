@@ -174,3 +174,5 @@ INSERT INTO seats (bus_id, seat_number) VALUES
 (@bus_id, '10C'),
 (@bus_id, '10D'),
 (@bus_id, '10E');
+CREATE INDEX idx_bus_seat_date ON bookings(bus_id, seat_number, travel_date);
+describe bookings
