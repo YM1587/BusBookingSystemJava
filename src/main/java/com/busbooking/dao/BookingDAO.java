@@ -25,7 +25,7 @@ public class BookingDAO {
             stmt.setString(7, booking.getRouteName());
             stmt.setString(8, booking.getBoardingPoint());
             stmt.setBigDecimal(9, booking.getTotalFare());
-            stmt.setString(10, booking.getBookingStatus());           // ✅ no more hardcoding
+            stmt.setString(10, booking.getBookingStatus());
             stmt.setString(11, booking.getTransactionReference());
             stmt.setString(12, booking.getPaymentStatus());
 

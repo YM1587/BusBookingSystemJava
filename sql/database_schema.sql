@@ -126,3 +126,51 @@ ADD COLUMN transaction_reference VARCHAR(255),
 ADD COLUMN payment_status VARCHAR(50);
 
 select * from bookings
+ALTER TABLE seats
+DROP COLUMN seat_status;
+truncate table seats
+select * from seats
+-- Insert seats for Bus 6
+SET @bus_id = 6;
+INSERT INTO seats (bus_id, seat_number) VALUES
+(@bus_id, '1A'),
+(@bus_id, '1B'),
+(@bus_id, '1C'),
+(@bus_id, '1D'),
+(@bus_id, '2A'),
+(@bus_id, '2B'),
+(@bus_id, '2C'),
+(@bus_id, '2D'),
+(@bus_id, '3A'),
+(@bus_id, '3B'),
+(@bus_id, '3C'),
+(@bus_id, '3D'),
+(@bus_id, '4A'),
+(@bus_id, '4B'),
+(@bus_id, '4C'),
+(@bus_id, '4D'),
+(@bus_id, '5A'),
+(@bus_id, '5B'),
+(@bus_id, '5C'),
+(@bus_id, '5D'),
+(@bus_id, '6A'),
+(@bus_id, '6B'),
+(@bus_id, '6C'),
+(@bus_id, '6D'),
+(@bus_id, '7A'),
+(@bus_id, '7B'),
+(@bus_id, '7C'),
+(@bus_id, '7D'),
+(@bus_id, '8A'),
+(@bus_id, '8B'),
+(@bus_id, '8C'),
+(@bus_id, '8D'),
+(@bus_id, '9A'),
+(@bus_id, '9B'),
+(@bus_id, '9C'),
+(@bus_id, '9D'),
+(@bus_id, '10A'),
+(@bus_id, '10B'),
+(@bus_id, '10C'),
+(@bus_id, '10D'),
+(@bus_id, '10E');
