@@ -144,7 +144,7 @@ public class SeatSelectionController {
 //        // Add navigation logic here
 //    }
 
-    // ✅ New method: navigates to passenger_details.fxml
+    // New method: navigates to passenger_details.fxml
     @FXML
     public void navigateToPassengerDetails() {
         if (selectedSeat == null) return;

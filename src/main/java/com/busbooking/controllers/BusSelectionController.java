@@ -55,10 +55,13 @@ public class BusSelectionController {
     // Fetch buses from the database using the BusDAO
     private List<Bus> getAvailableBuses() {
         List<Bus> buses = new ArrayList<>();
-        int routeId = fromRoute.getRouteId();  // Assuming Route class has getRouteId method
-        buses = busDAO.getBusesByRoute(routeId);  // Fetching buses for the selected route
+        int routeId = fromRoute.getRouteId();  // Fetch route ID
+        buses = busDAO.getBusesByRoute(routeId, departureDate);  // Fetch buses for the selected route and date
+
+        // Return the list of buses with their available seats
         return buses;
     }
+
 
     // Display buses on the UI
     private void displayBuses(List<Bus> buses) {

@@ -6,6 +6,10 @@ import com.busbooking.models.Bus;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
+
+import java.sql.Date;
+
 
 public class BusDAO {
     private final Connection conn;
@@ -15,20 +19,23 @@ public class BusDAO {
     }
 
     // Get all available buses for the given route, including departure time and available seats
-    public List<Bus> getBusesByRoute(int routeId) {
+    public List<Bus> getBusesByRoute(int routeId, LocalDate travelDate) {
         List<Bus> buses = new ArrayList<>();
         String sql = "SELECT b.bus_id, b.bus_number, b.bus_type, b.operator_name, r.route_name, " +
                 "r.start_location, r.end_location, r.fare, b.departure_time, " +
-                "COUNT(s.seat_id) AS available_seats " + // Counting the available seats (seat_status = 'Available')
+                "COUNT(s.seat_id) AS available_seats " + // Counting available seats (seat_status = 'Available')
                 "FROM buses b " +
                 "JOIN routes r ON b.route_id = r.route_id " +
                 "JOIN seats s ON b.bus_id = s.bus_id " +
-                "WHERE r.route_id = ? AND s.seat_status = 'Available' " + // Filtering for available seats
+                "LEFT JOIN bookings bo ON s.seat_id = bo.seat_id AND bo.travel_date = ? " + // Join with bookings to filter by date
+                "WHERE r.route_id = ? AND s.seat_status = 'Available' " +
+                "AND bo.seat_id IS NULL " + // Ensure the seat is not booked for this travel date
                 "GROUP BY b.bus_id, b.bus_number, b.bus_type, b.operator_name, r.route_name, " +
                 "r.start_location, r.end_location, r.fare, b.departure_time";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, routeId);
+            stmt.setDate(1, Date.valueOf(travelDate)); // Set the travel date parameter
+            stmt.setInt(2, routeId); // Set the route ID parameter
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -53,6 +60,7 @@ public class BusDAO {
         }
         return buses;
     }
+
 
     // Get all buses, including other parameters, departure time, and available seats
     public List<Bus> getAllBuses() {
