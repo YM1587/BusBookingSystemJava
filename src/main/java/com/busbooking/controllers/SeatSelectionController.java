@@ -104,7 +104,7 @@ public class SeatSelectionController {
     }
 
     private boolean isDriverSeat(String seatNumber) {
-        return "1A".equalsIgnoreCase(seatNumber);
+        return "1D".equalsIgnoreCase(seatNumber);
     }
 
     private Seat getSeatByNumber(List<Seat> seats, String seatNumber) {
