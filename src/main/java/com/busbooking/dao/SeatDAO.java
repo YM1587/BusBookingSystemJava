@@ -5,22 +5,23 @@ import com.busbooking.config.DatabaseConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
 
 public class SeatDAO {
 
     public void addSeat(Seat seat) {
-        String sql = "INSERT INTO seats (bus_id, seat_number, seat_status) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO seats (bus_id, seat_number) VALUES (?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, seat.getBusId());
             stmt.setString(2, seat.getSeatNumber());
-            stmt.setString(3, seat.getSeatStatus());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     public Seat getSeatById(int id) {
         String sql = "SELECT * FROM seats WHERE seat_id = ?";
@@ -33,7 +34,7 @@ public class SeatDAO {
                         rs.getInt("seat_id"),
                         rs.getInt("bus_id"),
                         rs.getString("seat_number"),
-                        rs.getString("seat_status"),
+                        null, // seat_status is no longer needed
                         rs.getTimestamp("created_at")
                 );
             }
@@ -43,8 +44,8 @@ public class SeatDAO {
         return null;
     }
 
+
     public List<Seat> getSeats() {
-        // This method fetches all the seats from the database
         List<Seat> seats = new ArrayList<>();
         String sql = "SELECT * FROM seats";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -55,7 +56,7 @@ public class SeatDAO {
                         rs.getInt("seat_id"),
                         rs.getInt("bus_id"),
                         rs.getString("seat_number"),
-                        rs.getString("seat_status"),
+                        null, // seat_status is no longer needed
                         rs.getTimestamp("created_at")
                 ));
             }
@@ -65,22 +66,47 @@ public class SeatDAO {
         return seats;
     }
 
-    public void updateSeatStatus(String seatNumber, int busId, String newStatus) {
-        // Modify the SQL to also check for busId along with seatNumber
-        String sql = "UPDATE seats SET seat_status = ? WHERE seat_number = ? AND bus_id = ?";
+
+
+    public List<Seat> getAvailableSeatsByBusAndDate(int busId, LocalDate travelDate) {
+        List<Seat> availableSeats = new ArrayList<>();
+
+        String sql = """
+        SELECT s.*
+        FROM seats s
+        WHERE s.bus_id = ?
+          AND s.seat_number NOT IN (
+              SELECT b.seat_number
+              FROM bookings b
+              WHERE b.bus_id = ?
+                AND b.travel_date = ?
+                AND b.booking_status = 'confirmed'
+          )
+    """;
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, newStatus);  // Set the new seat status
-            stmt.setString(2, seatNumber); // Set the seat number
-            stmt.setInt(3, busId);         // Set the bus ID
+            stmt.setInt(1, busId);
+            stmt.setInt(2, busId);
+            stmt.setDate(3, Date.valueOf(travelDate));
 
-            stmt.executeUpdate();
-
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Seat seat = new Seat(
+                        rs.getInt("seat_id"),
+                        rs.getInt("bus_id"),
+                        rs.getString("seat_number"),
+                        null, // seat_status is being deprecated
+                        rs.getTimestamp("created_at")
+                );
+                availableSeats.add(seat);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return availableSeats;
     }
 
 

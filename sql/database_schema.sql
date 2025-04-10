@@ -125,3 +125,4 @@ ALTER TABLE bookings
 ADD COLUMN transaction_reference VARCHAR(255),
 ADD COLUMN payment_status VARCHAR(50);
 
+select * from bookings
