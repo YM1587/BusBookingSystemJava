@@ -80,7 +80,7 @@ public class SeatSelectionController {
                 Seat seat = getSeatByNumber(seats, seatNumber);
 
                 // Mark driver's seat (1A) as always booked
-                if ("1A".equals(seatNumber)) {
+                if (isDriverSeat(seatNumber)) {
                     seatButton.setStyle("-fx-background-color: darkgray;");
                     seatButton.setDisable(true);
                 } else if (seat != null) {
@@ -103,6 +103,9 @@ public class SeatSelectionController {
         seatGrid.setPadding(new Insets(10));
     }
 
+    private boolean isDriverSeat(String seatNumber) {
+        return "1A".equalsIgnoreCase(seatNumber);
+    }
 
     private Seat getSeatByNumber(List<Seat> seats, String seatNumber) {
         return seats.stream()
@@ -135,13 +138,6 @@ public class SeatSelectionController {
         nextButton.setDisable(false);
     }
 
-//    @FXML
-//    public void goToNextScreen() {
-//        System.out.println("Proceeding to the next screen with seat: " + selectedSeat);
-//        // Add navigation logic here
-//    }
-
-    // New method: navigates to passenger_details.fxml
     @FXML
     public void navigateToPassengerDetails() {
         if (selectedSeat == null) return;
