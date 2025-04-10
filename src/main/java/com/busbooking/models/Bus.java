@@ -1,22 +1,23 @@
 package com.busbooking.models;
 
 public class Bus {
-    private int busId;  // New field for busId
+    private int busId;
     private String busNumber;
     private String busType;
-    private int capacity = 41;  // Default capacity
+    private int capacity = 41;
     private String operatorName;
     private String routeName;
     private String startLocation;
     private String endLocation;
     private double fare;
-    private String departureTime; // Field for departure time
-    private int availableSeats; // Field for available seats
+    private String departureTime;
+    private int availableSeats;
+    private int totalSeats; // 🔹 NEW FIELD
 
-    // Constructor with busId added
+    // Updated constructor (you can add totalSeats if needed in future constructors)
     public Bus(int busId, String busNumber, String busType, String operatorName, String routeName,
                String startLocation, String endLocation, double fare, String departureTime) {
-        this.busId = busId;  // Set busId
+        this.busId = busId;
         this.busNumber = busNumber;
         this.busType = busType;
         this.operatorName = operatorName;
@@ -25,10 +26,10 @@ public class Bus {
         this.endLocation = endLocation;
         this.fare = fare;
         this.departureTime = departureTime;
-        this.availableSeats = capacity;  // Assuming all seats are available initially
+        this.availableSeats = capacity;
     }
 
-    // Getters and Setters for all fields
+    // Getters and Setters
     public int getBusId() {
         return busId;
     }
@@ -109,7 +110,6 @@ public class Bus {
         this.departureTime = departureTime;
     }
 
-    // Getter and Setter for availableSeats
     public int getAvailableSeats() {
         return availableSeats;
     }
@@ -118,11 +118,20 @@ public class Bus {
         this.availableSeats = availableSeats;
     }
 
-    // Override toString() for easy logging and debugging
+    // 🔹 Getter and Setter for totalSeats
+    public int getTotalSeats() {
+        return totalSeats;
+    }
+
+    public void setTotalSeats(int totalSeats) {
+        this.totalSeats = totalSeats;
+    }
+
+    // Override toString() with totalSeats
     @Override
     public String toString() {
         return "Bus{" +
-                "busId=" + busId +  // Include busId in the toString output
+                "busId=" + busId +
                 ", busNumber='" + busNumber + '\'' +
                 ", busType='" + busType + '\'' +
                 ", capacity=" + capacity +
@@ -133,6 +142,7 @@ public class Bus {
                 ", fare=" + fare +
                 ", departureTime='" + departureTime + '\'' +
                 ", availableSeats=" + availableSeats +
+                ", totalSeats=" + totalSeats +
                 '}';
     }
 }

@@ -23,36 +23,35 @@ public class BusDAO {
         List<Bus> buses = new ArrayList<>();
         String sql = "SELECT b.bus_id, b.bus_number, b.bus_type, b.operator_name, r.route_name, " +
                 "r.start_location, r.end_location, r.fare, b.departure_time, " +
-                "COUNT(s.seat_id) AS available_seats " + // Counting available seats (seat_status = 'Available')
+                "COUNT(DISTINCT s.seat_id) AS total_seats, " +
+                "COUNT(DISTINCT CASE WHEN bo.seat_id IS NULL THEN s.seat_id END) AS available_seats " +
                 "FROM buses b " +
                 "JOIN routes r ON b.route_id = r.route_id " +
                 "JOIN seats s ON b.bus_id = s.bus_id " +
-                "LEFT JOIN bookings bo ON s.seat_id = bo.seat_id AND bo.travel_date = ? " + // Join with bookings to filter by date
-                "WHERE r.route_id = ? AND s.seat_status = 'Available' " +
-                "AND bo.seat_id IS NULL " + // Ensure the seat is not booked for this travel date
+                "LEFT JOIN bookings bo ON s.seat_id = bo.seat_id AND bo.travel_date = ? " +
+                "WHERE r.route_id = ? " +
                 "GROUP BY b.bus_id, b.bus_number, b.bus_type, b.operator_name, r.route_name, " +
                 "r.start_location, r.end_location, r.fare, b.departure_time";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setDate(1, Date.valueOf(travelDate)); // Set the travel date parameter
-            stmt.setInt(2, routeId); // Set the route ID parameter
+            stmt.setDate(1, Date.valueOf(travelDate));
+            stmt.setInt(2, routeId);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                // Create Bus object with busId included
                 Bus bus = new Bus(
-                        rs.getInt("bus_id"),           // busId
-                        rs.getString("bus_number"),    // busNumber
-                        rs.getString("bus_type"),      // busType
-                        rs.getString("operator_name"), // operatorName
-                        rs.getString("route_name"),    // routeName
-                        rs.getString("start_location"),// startLocation
-                        rs.getString("end_location"),  // endLocation
-                        rs.getDouble("fare"),          // fare
-                        rs.getString("departure_time") // departureTime
+                        rs.getInt("bus_id"),
+                        rs.getString("bus_number"),
+                        rs.getString("bus_type"),
+                        rs.getString("operator_name"),
+                        rs.getString("route_name"),
+                        rs.getString("start_location"),
+                        rs.getString("end_location"),
+                        rs.getDouble("fare"),
+                        rs.getString("departure_time")
                 );
-                // Set available seats from the query result
                 bus.setAvailableSeats(rs.getInt("available_seats"));
+                bus.setTotalSeats(rs.getInt("total_seats")); // Assuming your Bus model has this field
                 buses.add(bus);
             }
         } catch (SQLException e) {
@@ -60,6 +59,7 @@ public class BusDAO {
         }
         return buses;
     }
+
 
 
     // Get all buses, including other parameters, departure time, and available seats
@@ -67,11 +67,12 @@ public class BusDAO {
         List<Bus> buses = new ArrayList<>();
         String sql = "SELECT b.bus_id, b.bus_number, b.bus_type, b.operator_name, r.route_name, " +
                 "r.start_location, r.end_location, r.fare, b.departure_time, " +
-                "COUNT(s.seat_id) AS available_seats " + // Counting the available seats (seat_status = 'Available')
+                "COUNT(DISTINCT s.seat_id) AS total_seats, " +
+                "COUNT(DISTINCT CASE WHEN bo.seat_id IS NULL THEN s.seat_id END) AS available_seats " +
                 "FROM buses b " +
                 "JOIN routes r ON b.route_id = r.route_id " +
                 "JOIN seats s ON b.bus_id = s.bus_id " +
-                "WHERE s.seat_status = 'Available' " + // Filtering for available seats
+                "LEFT JOIN bookings bo ON s.seat_id = bo.seat_id " +
                 "GROUP BY b.bus_id, b.bus_number, b.bus_type, b.operator_name, r.route_name, " +
                 "r.start_location, r.end_location, r.fare, b.departure_time";
 
@@ -79,20 +80,19 @@ public class BusDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                // Create Bus object with busId included
                 Bus bus = new Bus(
-                        rs.getInt("bus_id"),           // busId
-                        rs.getString("bus_number"),    // busNumber
-                        rs.getString("bus_type"),      // busType
-                        rs.getString("operator_name"), // operatorName
-                        rs.getString("route_name"),    // routeName
-                        rs.getString("start_location"),// startLocation
-                        rs.getString("end_location"),  // endLocation
-                        rs.getDouble("fare"),          // fare
-                        rs.getString("departure_time") // departureTime
+                        rs.getInt("bus_id"),
+                        rs.getString("bus_number"),
+                        rs.getString("bus_type"),
+                        rs.getString("operator_name"),
+                        rs.getString("route_name"),
+                        rs.getString("start_location"),
+                        rs.getString("end_location"),
+                        rs.getDouble("fare"),
+                        rs.getString("departure_time")
                 );
-                // Set available seats from the query result
                 bus.setAvailableSeats(rs.getInt("available_seats"));
+                bus.setTotalSeats(rs.getInt("total_seats"));
                 buses.add(bus);
             }
         } catch (SQLException e) {
@@ -100,4 +100,5 @@ public class BusDAO {
         }
         return buses;
     }
+
 }

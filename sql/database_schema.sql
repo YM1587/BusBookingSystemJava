@@ -128,7 +128,7 @@ ADD COLUMN payment_status VARCHAR(50);
 select * from bookings
 ALTER TABLE seats
 DROP COLUMN seat_status;
-truncate table seats
+--truncate table seats
 select * from seats
 -- Insert seats for Bus 6
 SET @bus_id = 6;
