@@ -58,31 +58,45 @@ public class SeatSelectionController {
     }
 
     private void generateSeatLayout() {
-        List<Seat> seats = seatDAO.getSeats(); // Get all available seats from the database
+        // Fetch all seats for the given bus
+        List<Seat> seats = seatDAO.getSeats();
         seatGrid.getChildren().clear(); // Clear any previous content
 
+        // Iterate over the rows (1-9) and the last row (10)
         for (int row = 1; row <= 10; row++) {
             int colIndex = 0;
 
+            // Each row has either 4 or 5 seats depending on the row
             for (int col = 1; col <= (row == 10 ? 5 : 4); col++) {
-                // Add spacer between B and C
+                // Add a spacer between B and C columns
                 if (col == 3) {
                     Region spacer = new Region();
                     spacer.setMinWidth(20);
                     seatGrid.add(spacer, colIndex++, row - 1);
                 }
 
+                // Generate the seat number (e.g., 1A, 1B, etc.)
                 String seatNumber = row + String.valueOf((char) ('A' + col - 1));
                 Button seatButton = new Button(seatNumber);
                 seatButton.setPrefWidth(50);
 
+                // Get the seat object for the current seat number
                 Seat seat = getSeatByNumber(seats, seatNumber);
-                if (seat != null && "Booked".equals(seat.getSeatStatus())) {
+                if (seat != null) {
+                    // Check if the seat is booked by querying its status from the Bookings table
+                    if ("Booked".equals(seat.getSeatStatus())) {
+                        // Disable the button and mark it as booked (lightgray)
+                        seatButton.setStyle("-fx-background-color: lightgray;");
+                        seatButton.setDisable(true);
+                    } else {
+                        // If the seat is available, allow the user to select it (white)
+                        seatButton.setStyle("-fx-background-color: white;");
+                        seatButton.setOnAction(event -> selectSeat(seatButton));
+                    }
+                } else {
+                    // If no seat data is available for the given seat number, disable it
                     seatButton.setStyle("-fx-background-color: lightgray;");
                     seatButton.setDisable(true);
-                } else {
-                    seatButton.setStyle("-fx-background-color: white;");
-                    seatButton.setOnAction(event -> selectSeat(seatButton));
                 }
 
                 seatGrid.add(seatButton, colIndex++, row - 1);
@@ -91,6 +105,7 @@ public class SeatSelectionController {
 
         seatGrid.setPadding(new Insets(10));
     }
+
 
     private Seat getSeatByNumber(List<Seat> seats, String seatNumber) {
         return seats.stream()
