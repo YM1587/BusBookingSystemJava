@@ -12,7 +12,7 @@ public class BookingDAO {
 
     public boolean createBooking(Booking booking) {
         String sql = "INSERT INTO bookings (passenger_id, pnr_number, bus_id, seat_number, travel_date, departure_time, route_name, boarding_point, total_fare, booking_status, transaction_reference, payment_status) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', ?, ?)";
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -25,8 +25,9 @@ public class BookingDAO {
             stmt.setString(7, booking.getRouteName());
             stmt.setString(8, booking.getBoardingPoint());
             stmt.setBigDecimal(9, booking.getTotalFare());
-            stmt.setString(10, booking.getTransactionReference());
-            stmt.setString(11, booking.getPaymentStatus());
+            stmt.setString(10, booking.getBookingStatus());           // ✅ no more hardcoding
+            stmt.setString(11, booking.getTransactionReference());
+            stmt.setString(12, booking.getPaymentStatus());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
