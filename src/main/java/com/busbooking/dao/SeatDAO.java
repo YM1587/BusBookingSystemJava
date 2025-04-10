@@ -65,31 +65,29 @@ public class SeatDAO {
         }
         return seats;
     }
-
-
-
-    public List<Seat> getAvailableSeatsByBusAndDate(int busId, LocalDate travelDate) {
-        List<Seat> availableSeats = new ArrayList<>();
+    public List<Seat> getSeatsByBusAndDate(int busId, LocalDate travelDate) {
+        List<Seat> seats = new ArrayList<>();
 
         String sql = """
-        SELECT s.*
+        SELECT s.*, 
+               CASE 
+                   WHEN b.seat_number IS NOT NULL THEN 'Booked'
+                   ELSE 'Available'
+               END AS seat_status
         FROM seats s
+        LEFT JOIN bookings b 
+            ON s.bus_id = b.bus_id 
+            AND s.seat_number = b.seat_number 
+            AND b.travel_date = ? 
+            AND b.booking_status = 'confirmed'
         WHERE s.bus_id = ?
-          AND s.seat_number NOT IN (
-              SELECT b.seat_number
-              FROM bookings b
-              WHERE b.bus_id = ?
-                AND b.travel_date = ?
-                AND b.booking_status = 'confirmed'
-          )
     """;
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, busId);
+            stmt.setDate(1, Date.valueOf(travelDate));
             stmt.setInt(2, busId);
-            stmt.setDate(3, Date.valueOf(travelDate));
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -97,17 +95,21 @@ public class SeatDAO {
                         rs.getInt("seat_id"),
                         rs.getInt("bus_id"),
                         rs.getString("seat_number"),
-                        null, // seat_status is being deprecated
+                        rs.getString("seat_status"),
                         rs.getTimestamp("created_at")
                 );
-                availableSeats.add(seat);
+                seats.add(seat);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return availableSeats;
+        return seats;
     }
+
+
+
+
 
 
 
