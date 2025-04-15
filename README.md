@@ -16,6 +16,7 @@ A complete JavaFX-based bus booking management application with real-time seat r
 
 🗃️ MySQL Database Integration
 
+
 ## ⚙️ Tech Stack
 ```
 Layer | Technology
@@ -97,3 +98,62 @@ Styling | CSS (JavaFX inline)
 ├── build.gradle (If using Gradle)
 ├── README.md (Project documentation) 
 ```
+
+## 🛠️ Setup Instructions
+
+## 1. Clone the Repo
+```
+bash
+git clone https://github.com/yourusername/bus-booking-system.git
+cd bus-booking-system
+```
+## 2. Setup Database
+Create a MySQL database, e.g., bus_booking
+
+Run the provided SQL file:
+```
+sql
+SOURCE path/to/database.sql;
+```
+## 3. Update DB Credentials
+In your DatabaseConnection.java:
+```
+java
+private static final String URL = "jdbc:mysql://localhost:3306/bus_booking";
+private static final String USER = "root";
+private static final String PASSWORD = "yourpassword";
+```
+## 4. Run the Application
+Using your IDE (IntelliJ/VSCode/NetBeans):
+
+Run Main.java
+
+Or build with javac and run via terminal
+
+## 🧾 Receipt Format
+After successful payment, a printable receipt is generated including:
+
+Passenger name
+
+Route info
+
+Seat No.
+
+Fare
+
+Booking status
+
+Transaction reference
+
+Travel date and time
+
+## 📌 To Do / Improvements
+Email/SMS ticket delivery
+
+Admin dashboard for bus/staff management
+
+Live seat updates
+
+Real MPESA API integration
+
+QR code ticket validation
