@@ -1,5 +1,25 @@
-YM1587/Busbooking_java-project
-This is my file structure:
+## Busbooking_java-project
+A complete JavaFX-based bus booking management application with real-time seat reservation, MPESA-style payment simulation, and printable receipts. Built for efficient travel planning and user-friendly experiences.
+
+## ✨ Features
+🧑 Passenger Information Management
+🪑 Interactive Seat Selection per Bus
+🔍 Real-time Route & Fare Display
+💸 Payment Integration (simple mock up)
+📄 Receipt Generation with Print Support
+📚 Booking History Management
+🗃️ MySQL Database Integration
+
+## ⚙️ Tech Stack
+```
+Layer | Technology
+Frontend | JavaFX (FXML, SceneBuilder)
+Backend | Java (OOP + DAO Pattern)
+Database | MySQL
+Styling | CSS (JavaFX inline)
+```
+
+## This is my file structure:
 ```
 📁 Project Structure
 📂 BusBookingSystem
