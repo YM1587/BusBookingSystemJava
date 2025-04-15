@@ -3,11 +3,17 @@ A complete JavaFX-based bus booking management application with real-time seat r
 
 ## ✨ Features
 🧑 Passenger Information Management
+
 🪑 Interactive Seat Selection per Bus
+
 🔍 Real-time Route & Fare Display
+
 💸 Payment Integration (simple mock up)
+
 📄 Receipt Generation with Print Support
+
 📚 Booking History Management
+
 🗃️ MySQL Database Integration
 
 ## ⚙️ Tech Stack
