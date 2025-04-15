@@ -1,7 +1,8 @@
 YM1587/Busbooking_java-project
 This is my file structure:
-
-<details> <summary><strong>📁 Project Structure📂 BusBookingSystem
+```
+📁 Project Structure
+📂 BusBookingSystem
 ├── 📂 src
 │   ├── 📂 main
 │   │   ├── 📂 java
@@ -68,4 +69,5 @@ This is my file structure:
 │   ├── database_schema.sql                    # SQL file for table creation
 ├── pom.xml (If using Maven)
 ├── build.gradle (If using Gradle)
-├── README.md (Project documentation) </strong> (click to expand)</summary>
+├── README.md (Project documentation) 
+```
